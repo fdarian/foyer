@@ -1,0 +1,21 @@
+{
+  "name": "@foyer/engine",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun run entries/server.ts",
+    "start": "bun run entries/server.ts",
+    "check:tsc": "tsgo --noEmit",
+    "check:lint": "biome check"
+  },
+  "dependencies": {
+    "@effect/platform": "catalog:",
+    "@effect/platform-bun": "catalog:",
+    "@foyer/core": "workspace:*",
+    "effect": "catalog:"
+  },
+  "devDependencies": {
+    "@foyer/config": "workspace:*",
+    "@typescript/native-preview": "^7.0.0-dev.20260501.1"
+  }
+}
