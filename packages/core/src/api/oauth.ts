@@ -6,11 +6,11 @@ export const OAuthStartInput = Schema.Struct({
   connectionId: Schema.String,
   redirectUrl: Schema.String,
   provider: Schema.String,
-  scopes: Schema.optionalWith(Schema.Array(Schema.String), { as: 'option' }),
-  clientId: Schema.optionalWith(Schema.String, { as: 'option' }),
-  clientSecret: Schema.optionalWith(Schema.String, { as: 'option' }),
-  authorizationEndpoint: Schema.optionalWith(Schema.String, { as: 'option' }),
-  tokenEndpoint: Schema.optionalWith(Schema.String, { as: 'option' }),
+  scopes: Schema.optional(Schema.Array(Schema.String)),
+  clientId: Schema.optional(Schema.String),
+  clientSecret: Schema.optional(Schema.String),
+  authorizationEndpoint: Schema.optional(Schema.String),
+  tokenEndpoint: Schema.optional(Schema.String),
 });
 
 export type OAuthStartInput = typeof OAuthStartInput.Type;
@@ -39,8 +39,8 @@ export class OAuthApi extends HttpApiGroup.make('oauth')
       .setUrlParams(
         Schema.Struct({
           state: Schema.String,
-          code: Schema.optionalWith(Schema.String, { as: 'option' }),
-          error: Schema.optionalWith(Schema.String, { as: 'option' }),
+          code: Schema.optional(Schema.String),
+          error: Schema.optional(Schema.String),
         }),
       )
       .addSuccess(Schema.String),

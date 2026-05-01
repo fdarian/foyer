@@ -12,14 +12,14 @@ export type Mcp = typeof Mcp.Type;
 
 export const CreateMcpInput = Schema.Struct({
   name: Schema.String,
-  description: Schema.optionalWith(Schema.String, { as: 'option' }),
+  description: Schema.optional(Schema.String),
 });
 
 export type CreateMcpInput = typeof CreateMcpInput.Type;
 
 export const UpdateMcpInput = Schema.Struct({
-  name: Schema.optionalWith(Schema.String, { as: 'option' }),
-  description: Schema.optionalWith(Schema.String, { as: 'option' }),
+  name: Schema.optional(Schema.String),
+  description: Schema.optional(Schema.String),
 });
 
 export type UpdateMcpInput = typeof UpdateMcpInput.Type;
@@ -40,18 +40,17 @@ export const CreateSourceInput = Schema.Struct({
   kind: Schema.Literal('mcp', 'openapi', 'graphql'),
   name: Schema.String,
   config: Schema.Record({ key: Schema.String, value: Schema.Unknown }),
-  connectionId: Schema.optionalWith(Schema.Number, { as: 'option' }),
+  connectionId: Schema.optional(Schema.Number),
 });
 
 export type CreateSourceInput = typeof CreateSourceInput.Type;
 
 export const UpdateSourceInput = Schema.Struct({
-  name: Schema.optionalWith(Schema.String, { as: 'option' }),
-  config: Schema.optionalWith(
+  name: Schema.optional(Schema.String),
+  config: Schema.optional(
     Schema.Record({ key: Schema.String, value: Schema.Unknown }),
-    { as: 'option' },
   ),
-  connectionId: Schema.optionalWith(Schema.Number, { as: 'option' }),
+  connectionId: Schema.optional(Schema.Number),
 });
 
 export type UpdateSourceInput = typeof UpdateSourceInput.Type;
@@ -74,25 +73,24 @@ export type Tool = typeof Tool.Type;
 export const CreateToolInput = Schema.Struct({
   mcpId: Schema.Number,
   name: Schema.String,
-  description: Schema.optionalWith(Schema.String, { as: 'option' }),
+  description: Schema.optional(Schema.String),
   inputSchema: Schema.Record({ key: Schema.String, value: Schema.Unknown }),
   sourceId: Schema.Number,
   sourceOperation: Schema.String,
-  postProcessJs: Schema.optionalWith(Schema.String, { as: 'option' }),
+  postProcessJs: Schema.optional(Schema.String),
 });
 
 export type CreateToolInput = typeof CreateToolInput.Type;
 
 export const UpdateToolInput = Schema.Struct({
-  name: Schema.optionalWith(Schema.String, { as: 'option' }),
-  description: Schema.optionalWith(Schema.String, { as: 'option' }),
-  inputSchema: Schema.optionalWith(
+  name: Schema.optional(Schema.String),
+  description: Schema.optional(Schema.String),
+  inputSchema: Schema.optional(
     Schema.Record({ key: Schema.String, value: Schema.Unknown }),
-    { as: 'option' },
   ),
-  sourceId: Schema.optionalWith(Schema.Number, { as: 'option' }),
-  sourceOperation: Schema.optionalWith(Schema.String, { as: 'option' }),
-  postProcessJs: Schema.optionalWith(Schema.String, { as: 'option' }),
+  sourceId: Schema.optional(Schema.Number),
+  sourceOperation: Schema.optional(Schema.String),
+  postProcessJs: Schema.optional(Schema.String),
 });
 
 export type UpdateToolInput = typeof UpdateToolInput.Type;
@@ -118,10 +116,9 @@ export const CreateConnectionInput = Schema.Struct({
 export type CreateConnectionInput = typeof CreateConnectionInput.Type;
 
 export const UpdateConnectionInput = Schema.Struct({
-  provider: Schema.optionalWith(Schema.String, { as: 'option' }),
-  providerState: Schema.optionalWith(
+  provider: Schema.optional(Schema.String),
+  providerState: Schema.optional(
     Schema.Record({ key: Schema.String, value: Schema.Unknown }),
-    { as: 'option' },
   ),
 });
 
