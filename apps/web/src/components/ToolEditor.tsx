@@ -5,8 +5,8 @@ export type McpOption = { id: number; name: string };
 export type SourceOption = { id: number; name: string; kind: string };
 
 export type ToolEditorProps = {
-  mcps: McpOption[];
-  sources: SourceOption[];
+  mcps: readonly McpOption[];
+  sources: readonly SourceOption[];
   mcpId: number;
   sourceId: number;
   name: string;
