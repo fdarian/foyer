@@ -105,7 +105,10 @@ async function buildMcpServer(mcpUuid: string, db: any) {
                         remoteTransport:
                           config.remoteTransport === undefined
                             ? undefined
-                            : String(config.remoteTransport),
+                            : (String(config.remoteTransport) as
+                                | 'auto'
+                                | 'sse'
+                                | 'streamable-http'),
                         namespace: sourceRow.name,
                       });
                     } else if (sourceRow.kind === 'graphql') {
@@ -157,11 +160,16 @@ async function buildMcpServer(mcpUuid: string, db: any) {
 
                     if (toolRow.postProcessJs) {
                       const quickJs = makeQuickJsExecutor();
-                      const invoker = makeExecutorToolInvoker(executor, {
-                        invokeOptions: {
-                          onElicitation: 'accept-all',
+                      const invoker = makeExecutorToolInvoker(
+                        executor as unknown as Parameters<
+                          typeof makeExecutorToolInvoker
+                        >[0],
+                        {
+                          invokeOptions: {
+                            onElicitation: 'accept-all',
+                          },
                         },
-                      });
+                      );
                       const wrappedCode = [
                         'const input = ',
                         JSON.stringify(args),
@@ -186,7 +194,7 @@ async function buildMcpServer(mcpUuid: string, db: any) {
                     return finalResult;
                   }),
               );
-            }),
+            }) as Effect.Effect<unknown, unknown, never>,
           );
 
           return {
