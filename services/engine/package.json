@@ -13,6 +13,7 @@
     "@effect/platform-bun": "catalog:",
     "@foyer/core": "workspace:*",
     "@foyer/db": "workspace:*",
+    "@foyer/mcp": "workspace:*",
     "drizzle-orm": "catalog:",
     "effect": "catalog:"
   },

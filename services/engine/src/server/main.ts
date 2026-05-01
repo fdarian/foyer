@@ -24,6 +24,11 @@ import {
   tools,
 } from '@foyer/db/schema';
 import { popupDocument } from '@foyer/core/oauth-popup';
+import { handleMcpRequestRaw } from '@foyer/mcp';
+import {
+  HttpServerRequest,
+  HttpServerResponse,
+} from '@effect/platform';
 
 const userId = 'local';
 
@@ -461,14 +466,28 @@ const OAuthApiLive = HttpApiBuilder.group(
       ),
 );
 
-const McpStubRoute = HttpLayerRouter.add(
-  'GET',
+const McpRoute = HttpLayerRouter.add(
+  '*',
   '/mcp/:uuid',
-  Effect.succeed(HttpServerResponse.json({ tools: [] })),
+  Effect.gen(function* () {
+    const request = yield* HttpServerRequest.HttpServerRequest;
+    const webRequest = yield* HttpServerRequest.toWeb(request);
+    const params = yield* HttpLayerRouter.params;
+    const mcpUuid = params.uuid;
+    if (!mcpUuid) {
+      return yield* Effect.fail(new Error('Missing MCP UUID'));
+    }
+    const db = yield* DatabaseClient;
+    const response = yield* Effect.tryPromise({
+      try: () => handleMcpRequestRaw(webRequest, mcpUuid, db),
+      catch: (cause) => new Error(String(cause)),
+    });
+    return HttpServerResponse.fromWeb(response);
+  }),
 );
 
 const routes = Layer.mergeAll(
-  McpStubRoute,
+  McpRoute,
   HttpLayerRouter.addHttpApi(FoyerApi, { openapiPath: '/spec.json' }),
   HttpApiScalar.layerHttpLayerRouter({ api: FoyerApi, path: '/' }),
   HttpLayerRouter.cors(),

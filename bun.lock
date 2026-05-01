@@ -114,6 +114,24 @@
         "@types/node": "catalog:",
       },
     },
+    "packages/mcp": {
+      "name": "@foyer/mcp",
+      "dependencies": {
+        "@effect/platform": "catalog:",
+        "@executor-js/execution": "catalog:",
+        "@executor-js/runtime-quickjs": "catalog:",
+        "@foyer/core": "workspace:*",
+        "@foyer/db": "workspace:*",
+        "@foyer/executor": "workspace:*",
+        "@modelcontextprotocol/sdk": "catalog:",
+        "drizzle-orm": "catalog:",
+        "effect": "catalog:",
+        "zod": "^3.25",
+      },
+      "devDependencies": {
+        "@foyer/config": "workspace:*",
+      },
+    },
     "services/engine": {
       "name": "@foyer/engine",
       "dependencies": {
@@ -121,6 +139,7 @@
         "@effect/platform-bun": "catalog:",
         "@foyer/core": "workspace:*",
         "@foyer/db": "workspace:*",
+        "@foyer/mcp": "workspace:*",
         "drizzle-orm": "catalog:",
         "effect": "catalog:",
       },
@@ -355,6 +374,8 @@
     "@foyer/engine": ["@foyer/engine@workspace:services/engine"],
 
     "@foyer/executor": ["@foyer/executor@workspace:packages/executor"],
+
+    "@foyer/mcp": ["@foyer/mcp@workspace:packages/mcp"],
 
     "@foyer/web": ["@foyer/web@workspace:apps/web"],
 
