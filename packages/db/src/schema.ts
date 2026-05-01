@@ -1,6 +1,6 @@
 import {
   bigserial,
-  bytea,
+  customType,
   jsonb,
   pgEnum,
   pgTable,
@@ -10,6 +10,12 @@ import {
   bigint,
 } from 'drizzle-orm/pg-core';
 import { uuidv7 } from 'uuid';
+
+const bytea = customType<{ data: Buffer }>({
+  dataType() {
+    return 'bytea';
+  },
+});
 
 export const sourceKind = pgEnum('source_kind', ['mcp', 'openapi', 'graphql']);
 
