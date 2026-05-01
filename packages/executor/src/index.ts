@@ -22,9 +22,7 @@ function buildEphemeralExecutor(profileId: string) {
   const effect = createExecutor({
     ...testConfig,
     scope: new Scope({
-      id: (ScopeId as unknown as { make: (s: string) => string }).make(
-        profileId,
-      ),
+      id: ScopeId.make(profileId),
       name: 'foyer',
       createdAt: new Date(),
     }),
@@ -71,7 +69,7 @@ export type ResolvedAuth = {
 export function resolveBearerToken(
   connectionId?: number | null,
   secretId?: number | null,
-): Effect.Effect<string | null, Error> {
+): Effect.Effect<string | null, Error, ConnectionService | SecretService> {
   return Effect.gen(function* () {
     if (connectionId) {
       const connectionService = yield* ConnectionService;
