@@ -1,0 +1,23 @@
+{
+  "name": "@foyer/mcp",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@effect/platform": "catalog:",
+    "@executor-js/execution": "catalog:",
+    "@executor-js/runtime-quickjs": "catalog:",
+    "@foyer/core": "workspace:*",
+    "@foyer/db": "workspace:*",
+    "@foyer/executor": "workspace:*",
+    "@modelcontextprotocol/sdk": "catalog:",
+    "drizzle-orm": "catalog:",
+    "effect": "catalog:",
+    "zod": "^3.25"
+  },
+  "devDependencies": {
+    "@foyer/config": "workspace:*"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "extends": "@foyer/config/tsconfig.lib.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@foyer/*": ["../../*/src"]
+    }
+  },
+  "include": ["src/**/*"]
+}
