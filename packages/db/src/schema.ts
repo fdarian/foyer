@@ -87,6 +87,9 @@ export const oauth2Sessions = pgTable('oauth2_sessions', {
   codeVerifier: text().notNull(),
   provider: text().notNull(),
   userId: text().notNull(),
+  connectionId: text(),
+  redirectUrl: text(),
+  metadata: jsonb(),
   createdAt: timestamp().$defaultFn(() => new Date()).notNull(),
   expiresAt: timestamp().notNull(),
 });

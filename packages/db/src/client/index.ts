@@ -13,3 +13,5 @@ export function createDatabaseClient() {
     process.env.DATABASE_LITE_PATH ?? 'services/engine/data/pglite/';
   return createPgliteClient(path);
 }
+
+export { migratePglite } from './migrate';

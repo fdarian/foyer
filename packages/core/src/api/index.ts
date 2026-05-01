@@ -1,17 +1,12 @@
 import { HttpApi, HttpApiEndpoint, HttpApiGroup } from '@effect/platform';
 import { Schema } from 'effect';
+import { AdminApi } from './admin.ts';
+import { OAuthApi } from './oauth.ts';
 
-export const Mcp = Schema.Struct({
-  id: Schema.Number,
-  uuid: Schema.String,
-  name: Schema.String,
-});
+export * from './schemas.ts';
+export { AdminApi } from './admin.ts';
+export { OAuthApi } from './oauth.ts';
 
-export class AdminApi extends HttpApiGroup.make('admin')
-  .add(
-    HttpApiEndpoint.get('listMcps', '/admin/mcps').addSuccess(
-      Schema.Array(Mcp),
-    ),
-  ) {}
-
-export class FoyerApi extends HttpApi.make('foyer').add(AdminApi) {}
+export class FoyerApi extends HttpApi.make('foyer')
+  .add(AdminApi)
+  .add(OAuthApi) {}

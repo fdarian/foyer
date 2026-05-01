@@ -3,11 +3,20 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./api": "./src/api/index.ts"
+    "./api": "./src/api/index.ts",
+    "./database": "./src/database.ts",
+    "./secret": "./src/secret/service.ts",
+    "./connection": "./src/connection/service.ts",
+    "./oauth": "./src/oauth/service.ts",
+    "./oauth-popup": "./src/oauth/popup-html.ts"
   },
   "dependencies": {
     "@effect/platform": "catalog:",
-    "effect": "catalog:"
+    "@foyer/db": "workspace:*",
+    "drizzle-orm": "catalog:",
+    "effect": "catalog:",
+    "oauth4webapi": "^3.5.1",
+    "uuid": "catalog:"
   },
   "devDependencies": {
     "@foyer/config": "workspace:*",
