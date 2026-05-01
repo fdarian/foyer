@@ -11,7 +11,7 @@ import {
   exchangeAuthorizationCode,
 } from './helpers.ts';
 
-export interface OAuthService {
+export interface OAuthServiceShape {
   readonly probe: (endpoint: string) => Effect.Effect<
     {
       readonly supportsOAuth: boolean;
@@ -46,7 +46,7 @@ export interface OAuthService {
 
 export class OAuthService extends Context.Tag('OAuthService')<
   OAuthService,
-  OAuthService
+  OAuthServiceShape
 >() {}
 
 const SESSION_TTL_MS = 15 * 60 * 1000;
@@ -60,7 +60,7 @@ interface SessionMetadata {
   readonly redirectUrl: string;
   readonly tokenEndpoint: string;
   readonly clientId: string;
-  readonly clientSecret?: string;
+  readonly clientSecret: string | undefined;
   readonly scopes: string[];
 }
 
@@ -71,7 +71,7 @@ const SessionMetadata = Schema.Struct({
   redirectUrl: Schema.String,
   tokenEndpoint: Schema.String,
   clientId: Schema.String,
-  clientSecret: Schema.optionalWith(Schema.String, { as: 'option' }),
+  clientSecret: Schema.String.pipe(Schema.optional),
   scopes: Schema.Array(Schema.String),
 });
 
@@ -191,20 +191,24 @@ export const OAuthServiceLive = Layer.effect(
         };
 
         yield* Effect.tryPromise(() =>
-          db.insert(oauth2Sessions).values({
-            state: sessionId,
-            codeVerifier,
-            provider: input.provider,
-            userId: input.userId,
-            connectionId: input.connectionId,
-            redirectUrl: input.redirectUrl,
-            metadata: encodeSessionMetadata(metadata) as Record<
-              string,
-              unknown
-            >,
-            expiresAt: new Date(Date.now() + SESSION_TTL_MS),
-          }),
-        );
+          db
+            .insert(oauth2Sessions)
+            .values({
+              state: sessionId,
+              codeVerifier,
+              provider: input.provider,
+              userId: input.userId,
+              connectionId: input.connectionId,
+              redirectUrl: input.redirectUrl,
+              metadata: encodeSessionMetadata(metadata) as Record<
+                string,
+                unknown
+              >,
+              expiresAt: new Date(Date.now() + SESSION_TTL_MS),
+            })
+            .execute()
+            .then(() => {}),
+        ).pipe(Effect.mapError((e) => new Error(String(e))));
 
         return { sessionId, authorizationUrl };
       });
@@ -218,12 +222,14 @@ export const OAuthServiceLive = Layer.effect(
       Error
     > =>
       Effect.gen(function* () {
-        const rows = yield* Effect.tryPromise(() =>
-          db
-            .select()
-            .from(oauth2Sessions)
-            .where(eq(oauth2Sessions.state, input.state)),
-        );
+        const rows = yield* Effect.tryPromise({
+          try: () =>
+            db
+              .select()
+              .from(oauth2Sessions)
+              .where(eq(oauth2Sessions.state, input.state)),
+          catch: (cause: unknown) => new Error(String(cause)),
+        });
         const session = rows[0];
         if (!session) {
           return yield* Effect.fail(
@@ -235,8 +241,10 @@ export const OAuthServiceLive = Layer.effect(
         const deleteSession = Effect.tryPromise(() =>
           db
             .delete(oauth2Sessions)
-            .where(eq(oauth2Sessions.state, input.state)),
-        );
+            .where(eq(oauth2Sessions.state, input.state))
+            .execute()
+            .then(() => {}),
+        ).pipe(Effect.mapError((e) => new Error(String(e))));
 
         if (input.error) {
           yield* deleteSession;
@@ -304,15 +312,19 @@ export const OAuthServiceLive = Layer.effect(
           db
             .update(secrets)
             .set({ ownedByConnectionId: connection.id })
-            .where(eq(secrets.id, accessSecret.id)),
-        );
+            .where(eq(secrets.id, accessSecret.id))
+            .execute()
+            .then(() => {}),
+        ).pipe(Effect.mapError((e) => new Error(String(e))));
         if (refreshSecret) {
           yield* Effect.tryPromise(() =>
             db
               .update(secrets)
               .set({ ownedByConnectionId: connection.id })
-              .where(eq(secrets.id, refreshSecret.id)),
-          );
+              .where(eq(secrets.id, refreshSecret.id))
+              .execute()
+              .then(() => {}),
+          ).pipe(Effect.mapError((e) => new Error(String(e))));
         }
 
         yield* deleteSession;

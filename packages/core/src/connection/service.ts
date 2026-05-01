@@ -4,7 +4,7 @@ import { Context, Effect, Layer } from 'effect';
 import { DatabaseClient } from '../database.ts';
 import { SecretService } from '../secret/service.ts';
 
-export interface ConnectionService {
+export interface ConnectionServiceShape {
   readonly list: (userId: string) => Effect.Effect<
     Array<{
       readonly id: number;
@@ -13,7 +13,7 @@ export interface ConnectionService {
       readonly accessTokenSecretId: number | null;
       readonly refreshTokenSecretId: number | null;
       readonly expiresAt: Date | null;
-      readonly providerState: Record<string, unknown>;
+      readonly providerState: Readonly<Record<string, unknown>>;
       readonly createdAt: Date;
     }>,
     Error
@@ -21,7 +21,7 @@ export interface ConnectionService {
   readonly create: (input: {
     readonly userId: string;
     readonly provider: string;
-    readonly providerState: Record<string, unknown>;
+    readonly providerState: Readonly<Record<string, unknown>>;
     readonly accessTokenSecretId?: number | null;
     readonly refreshTokenSecretId?: number | null;
     readonly expiresAt?: Date | null;
@@ -30,7 +30,10 @@ export interface ConnectionService {
       readonly id: number;
       readonly uuid: string;
       readonly provider: string;
-      readonly providerState: Record<string, unknown>;
+      readonly accessTokenSecretId: number | null;
+      readonly refreshTokenSecretId: number | null;
+      readonly expiresAt: Date | null;
+      readonly providerState: Readonly<Record<string, unknown>>;
       readonly createdAt: Date;
     },
     Error
@@ -41,7 +44,7 @@ export interface ConnectionService {
 
 export class ConnectionService extends Context.Tag('ConnectionService')<
   ConnectionService,
-  ConnectionService
+  ConnectionServiceShape
 >() {}
 
 export const ConnectionServiceLive = Layer.effect(
@@ -60,19 +63,34 @@ export const ConnectionServiceLive = Layer.effect(
         readonly accessTokenSecretId: number | null;
         readonly refreshTokenSecretId: number | null;
         readonly expiresAt: Date | null;
-        readonly providerState: Record<string, unknown>;
+        readonly providerState: Readonly<Record<string, unknown>>;
         readonly createdAt: Date;
       }>,
       Error
     > =>
-      Effect.tryPromise(() =>
-        db.select().from(connections).where(eq(connections.userId, userId)),
+      Effect.tryPromise({
+        try: () =>
+          db.select().from(connections).where(eq(connections.userId, userId)),
+        catch: (cause: unknown) => new Error(String(cause)),
+      }).pipe(
+        Effect.map((rows) =>
+          rows.map((row) => ({
+            id: row.id,
+            uuid: row.uuid,
+            provider: row.provider,
+            accessTokenSecretId: row.accessTokenSecretId,
+            refreshTokenSecretId: row.refreshTokenSecretId,
+            expiresAt: row.expiresAt,
+            providerState: row.providerState as Readonly<Record<string, unknown>>,
+            createdAt: row.createdAt,
+          })),
+        ),
       );
 
     const create = (input: {
       readonly userId: string;
       readonly provider: string;
-      readonly providerState: Record<string, unknown>;
+      readonly providerState: Readonly<Record<string, unknown>>;
       readonly accessTokenSecretId?: number | null;
       readonly refreshTokenSecretId?: number | null;
       readonly expiresAt?: Date | null;
@@ -81,7 +99,10 @@ export const ConnectionServiceLive = Layer.effect(
         readonly id: number;
         readonly uuid: string;
         readonly provider: string;
-        readonly providerState: Record<string, unknown>;
+        readonly accessTokenSecretId: number | null;
+        readonly refreshTokenSecretId: number | null;
+        readonly expiresAt: Date | null;
+        readonly providerState: Readonly<Record<string, unknown>>;
         readonly createdAt: Date;
       },
       Error
@@ -108,16 +129,21 @@ export const ConnectionServiceLive = Layer.effect(
           id: row.id,
           uuid: row.uuid,
           provider: row.provider,
-          providerState: row.providerState as Record<string, unknown>,
+          accessTokenSecretId: row.accessTokenSecretId,
+          refreshTokenSecretId: row.refreshTokenSecretId,
+          expiresAt: row.expiresAt,
+          providerState: row.providerState as Readonly<Record<string, unknown>>,
           createdAt: row.createdAt,
         };
       });
 
     const accessToken = (id: number): Effect.Effect<string | null, Error> =>
       Effect.gen(function* () {
-        const rows = yield* Effect.tryPromise(() =>
-          db.select().from(connections).where(eq(connections.id, id)),
-        );
+        const rows = yield* Effect.tryPromise({
+          try: () =>
+            db.select().from(connections).where(eq(connections.id, id)),
+          catch: (cause: unknown) => new Error(String(cause)),
+        });
         const row = rows[0];
         if (!row?.accessTokenSecretId) return null;
 
@@ -130,8 +156,12 @@ export const ConnectionServiceLive = Layer.effect(
     const remove = (id: number): Effect.Effect<void, Error> =>
       Effect.gen(function* () {
         yield* Effect.tryPromise(() =>
-          db.delete(connections).where(eq(connections.id, id)),
-        );
+          db
+            .delete(connections)
+            .where(eq(connections.id, id))
+            .execute()
+            .then(() => {}),
+        ).pipe(Effect.mapError((e) => new Error(String(e))));
       });
 
     return { list, create, accessToken, remove };
