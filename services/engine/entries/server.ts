@@ -30,9 +30,10 @@ const ContextLayers = Layer.mergeAll(
 
 const ServerLive = server.pipe(
   Layer.provide(
-    ApiLive.pipe(
-      Layer.provide(DatabaseClientLive),
-      Layer.provideMerge(ContextLayers),
+    Layer.mergeAll(
+      ApiLive.pipe(Layer.provide(DatabaseClientLive)),
+      DatabaseClientLive,
+      ContextLayers,
     ),
   ),
 );
