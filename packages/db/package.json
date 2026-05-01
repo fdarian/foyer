@@ -1,0 +1,19 @@
+{
+  "name": "@foyer/db",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./schema": "./src/schema.ts",
+    "./client": "./src/client/index.ts"
+  },
+  "dependencies": {
+    "@electric-sql/pglite": "catalog:",
+    "drizzle-orm": "catalog:",
+    "postgres": "catalog:",
+    "uuid": "catalog:"
+  },
+  "devDependencies": {
+    "@foyer/config": "workspace:*",
+    "drizzle-kit": "^0.30.0"
+  }
+}
