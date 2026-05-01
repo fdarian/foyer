@@ -9,7 +9,7 @@ import {
   uuid,
   bigint,
 } from 'drizzle-orm/pg-core';
-import { uuidv7 } from 'uuid';
+import { v7 as uuidv7 } from 'uuid';
 
 const bytea = customType<{ data: Buffer }>({
   dataType() {
