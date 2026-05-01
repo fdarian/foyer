@@ -1,0 +1,16 @@
+diff --git a/dist/index.js b/dist/index.js
+index 862d6064daecdac041584f9aceadfb27577a342d..68f8ae45b7cba6873c5edef97471cc05af67306a 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -353,4 +353,11 @@ export {
+   createExecutor2 as createExecutor,
+   definePlugin
+ };
++export {
++  ElicitationResponse,
++  makeInMemoryScopedKv,
++  registerRuntimeTools,
++  runtimeTool,
++  scopeKv
++} from "./core.js";
+ //# sourceMappingURL=index.js.map
