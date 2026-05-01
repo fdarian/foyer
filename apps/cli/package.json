@@ -1,0 +1,22 @@
+{
+  "name": "@foyer/cli",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "foyer": "./bin/foyer.ts"
+  },
+  "scripts": {
+    "check:tsc": "tsgo --noEmit",
+    "check:lint": "biome check"
+  },
+  "dependencies": {
+    "@effect/cli": "catalog:",
+    "@effect/platform": "catalog:",
+    "@effect/platform-bun": "catalog:",
+    "effect": "catalog:"
+  },
+  "devDependencies": {
+    "@foyer/config": "workspace:*",
+    "@typescript/native-preview": "^7.0.0-dev.20260501.1"
+  }
+}
