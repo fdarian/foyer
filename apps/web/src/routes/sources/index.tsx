@@ -1,8 +1,5 @@
-import { Link, createFileRoute } from '@tanstack/react-router';
-import {
-  useListSources,
-  useDeleteSource,
-} from '../../lib/useApi';
+import { createFileRoute, Link } from '@tanstack/react-router';
+import { useDeleteSource, useListSources } from '../../lib/useApi';
 
 export const Route = createFileRoute('/sources/')({
   component: SourcesListComponent,

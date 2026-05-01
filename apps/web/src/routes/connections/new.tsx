@@ -1,17 +1,14 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useState, useEffect, useCallback } from 'react';
-import {
-  useCreateConnection,
-  useOAuthStart,
-} from '../../lib/useApi';
+import { useCallback, useEffect, useState } from 'react';
 import { ConnectionForm } from '../../components/ConnectionForm';
+import { useCreateConnection, useOAuthStart } from '../../lib/useApi';
 
 export const Route = createFileRoute('/connections/new')({
   component: NewConnectionComponent,
 });
 
 const OAUTH_POPUP_MESSAGE_TYPE = 'oauth-popup-result';
-const OAUTH_CHANNEL_NAME = 'foyer-oauth';
+const _OAUTH_CHANNEL_NAME = 'foyer-oauth';
 
 function NewConnectionComponent() {
   const navigate = useNavigate();
@@ -34,24 +31,21 @@ function NewConnectionComponent() {
   const [scopes, setScopes] = useState('');
   const [oauthStatus, setOauthStatus] = useState<string | null>(null);
 
-  const handleOAuthMessage = useCallback(
-    (event: MessageEvent) => {
-      if (event.origin !== window.location.origin) return;
-      const data = event.data;
-      if (
-        typeof data === 'object' &&
-        data !== null &&
-        data.type === OAUTH_POPUP_MESSAGE_TYPE
-      ) {
-        if (data.ok) {
-          setOauthStatus('OAuth connected successfully');
-        } else {
-          setOauthStatus(`OAuth failed: ${data.error ?? 'Unknown error'}`);
-        }
+  const handleOAuthMessage = useCallback((event: MessageEvent) => {
+    if (event.origin !== window.location.origin) return;
+    const data = event.data;
+    if (
+      typeof data === 'object' &&
+      data !== null &&
+      data.type === OAUTH_POPUP_MESSAGE_TYPE
+    ) {
+      if (data.ok) {
+        setOauthStatus('OAuth connected successfully');
+      } else {
+        setOauthStatus(`OAuth failed: ${data.error ?? 'Unknown error'}`);
       }
-    },
-    [],
-  );
+    }
+  }, []);
 
   useEffect(() => {
     window.addEventListener('message', handleOAuthMessage);

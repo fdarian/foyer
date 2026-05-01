@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 
 export type McpDefinitionFormProps = {
   name: string;
@@ -13,10 +13,7 @@ export type McpDefinitionFormProps = {
 
 export function McpDefinitionForm(props: McpDefinitionFormProps) {
   return (
-    <form
-      onSubmit={props.onSubmit}
-      className="space-y-4 max-w-md"
-    >
+    <form onSubmit={props.onSubmit} className="space-y-4 max-w-md">
       <div>
         <label className="block text-sm font-medium mb-1">Name</label>
         <input
@@ -28,9 +25,7 @@ export function McpDefinitionForm(props: McpDefinitionFormProps) {
         />
       </div>
       <div>
-        <label className="block text-sm font-medium mb-1">
-          Description
-        </label>
+        <label className="block text-sm font-medium mb-1">Description</label>
         <textarea
           value={props.description}
           onChange={(e) => props.onDescriptionChange(e.target.value)}

@@ -1,8 +1,8 @@
 import * as BunHttpServer from '@effect/platform-bun/BunHttpServer';
 import * as BunRuntime from '@effect/platform-bun/BunRuntime';
-import { Config, Layer } from 'effect';
 import { DatabaseClient } from '@foyer/core/database';
 import { createDatabaseClient, migratePglite } from '@foyer/db/client';
+import { Config, Layer } from 'effect';
 import { ApiLive, server } from '../src/server/main.ts';
 
 const pglitePath = new URL('../data/pglite', import.meta.url).pathname;

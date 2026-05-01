@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 
-import { $ } from 'bun';
 import path from 'node:path';
+import { $ } from 'bun';
 
 const cliDir = path.resolve(import.meta.dirname, '..');
 const webDir = path.resolve(cliDir, '..', 'web');
@@ -13,12 +13,16 @@ process.chdir(cliDir);
 console.log('Building web UI...');
 await $`bun run --cwd ${webDir} build`;
 
-const files = (await Array.fromAsync(new Bun.Glob('**/*').scan({ cwd: distDir })))
+const files = (
+  await Array.fromAsync(new Bun.Glob('**/*').scan({ cwd: distDir }))
+)
   .map((file) => file.replaceAll('\\', '/'))
   .sort();
 
 const imports = files.map((file, i) => {
-  const spec = path.relative(cliDir, path.join(distDir, file)).replaceAll('\\', '/');
+  const spec = path
+    .relative(cliDir, path.join(distDir, file))
+    .replaceAll('\\', '/');
   return `import file_${i} from ${JSON.stringify(spec.startsWith('.') ? spec : `./${spec}`)} with { type: 'file' };`;
 });
 

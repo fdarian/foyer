@@ -1,18 +1,16 @@
+import { secrets } from '@foyer/db/schema';
 import { eq } from 'drizzle-orm';
 import { Context, Effect, Layer } from 'effect';
-import { secrets } from '@foyer/db/schema';
 import { DatabaseClient } from '../database.ts';
 
 export interface SecretService {
   readonly get: (id: number) => Effect.Effect<string | null, Error>;
-  readonly put: (
-    input: {
-      readonly name: string;
-      readonly value: string;
-      readonly userId: string;
-      readonly ownedByConnectionId?: number | null;
-    },
-  ) => Effect.Effect<{ readonly id: number; readonly uuid: string }, Error>;
+  readonly put: (input: {
+    readonly name: string;
+    readonly value: string;
+    readonly userId: string;
+    readonly ownedByConnectionId?: number | null;
+  }) => Effect.Effect<{ readonly id: number; readonly uuid: string }, Error>;
   readonly remove: (id: number) => Effect.Effect<void, Error>;
 }
 
@@ -91,14 +89,12 @@ export const SecretServiceLive = Layer.effect(
         return decrypted;
       });
 
-    const put = (
-      input: {
-        readonly name: string;
-        readonly value: string;
-        readonly userId: string;
-        readonly ownedByConnectionId?: number | null;
-      },
-    ): Effect.Effect<{ readonly id: number; readonly uuid: string }, Error> =>
+    const put = (input: {
+      readonly name: string;
+      readonly value: string;
+      readonly userId: string;
+      readonly ownedByConnectionId?: number | null;
+    }): Effect.Effect<{ readonly id: number; readonly uuid: string }, Error> =>
       Effect.gen(function* () {
         const encrypted = yield* Effect.promise(() =>
           encryptValue(input.value, key),

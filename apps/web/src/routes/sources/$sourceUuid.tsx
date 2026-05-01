@@ -1,11 +1,11 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { SourceForm } from '../../components/SourceForm';
 import {
+  useDeleteSource,
   useGetSource,
   useUpdateSource,
-  useDeleteSource,
 } from '../../lib/useApi';
-import { SourceForm } from '../../components/SourceForm';
 
 export const Route = createFileRoute('/sources/$sourceUuid')({
   component: SourceDetailComponent,
@@ -39,9 +39,7 @@ function SourceDetailComponent() {
       setConfigError(null);
       return parsed as Record<string, unknown>;
     } catch (err) {
-      setConfigError(
-        err instanceof Error ? err.message : 'Invalid JSON',
-      );
+      setConfigError(err instanceof Error ? err.message : 'Invalid JSON');
       return null;
     }
   }

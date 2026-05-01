@@ -1,13 +1,13 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { ToolEditor } from '../../components/ToolEditor';
 import {
-  useGetTool,
-  useUpdateTool,
   useDeleteTool,
+  useGetTool,
   useListMcps,
   useListSources,
+  useUpdateTool,
 } from '../../lib/useApi';
-import { ToolEditor } from '../../components/ToolEditor';
 
 export const Route = createFileRoute('/tools/$toolUuid')({
   component: ToolDetailComponent,
@@ -53,9 +53,7 @@ function ToolDetailComponent() {
       setSchemaError(null);
       return parsed as Record<string, unknown>;
     } catch (err) {
-      setSchemaError(
-        err instanceof Error ? err.message : 'Invalid JSON',
-      );
+      setSchemaError(err instanceof Error ? err.message : 'Invalid JSON');
       return null;
     }
   }

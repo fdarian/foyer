@@ -1,8 +1,5 @@
-import { Link, createFileRoute, useNavigate } from '@tanstack/react-router';
-import {
-  useListMcps,
-  useDeleteMcp,
-} from '../../lib/useApi';
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
+import { useDeleteMcp, useListMcps } from '../../lib/useApi';
 
 export const Route = createFileRoute('/mcps/')({
   component: McpsListComponent,

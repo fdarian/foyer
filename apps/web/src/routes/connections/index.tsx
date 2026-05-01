@@ -1,8 +1,5 @@
-import { Link, createFileRoute } from '@tanstack/react-router';
-import {
-  useListConnections,
-  useDeleteConnection,
-} from '../../lib/useApi';
+import { createFileRoute, Link } from '@tanstack/react-router';
+import { useDeleteConnection, useListConnections } from '../../lib/useApi';
 
 export const Route = createFileRoute('/connections/')({
   component: ConnectionsListComponent,
@@ -26,9 +23,7 @@ function ConnectionsListComponent() {
 
       {connectionsQuery.isLoading && <p>Loading...</p>}
       {connectionsQuery.isError && (
-        <p className="text-red-600">
-          Error: {connectionsQuery.error.message}
-        </p>
+        <p className="text-red-600">Error: {connectionsQuery.error.message}</p>
       )}
 
       {connectionsQuery.data && connectionsQuery.data.length === 0 && (

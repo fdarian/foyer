@@ -1,20 +1,13 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
-import {
-  useListMcps,
-  useListSources,
-  useCreateTool,
-} from '../../lib/useApi';
 import { ToolEditor } from '../../components/ToolEditor';
+import { useCreateTool, useListMcps, useListSources } from '../../lib/useApi';
 
 export const Route = createFileRoute('/tools/new')({
   component: NewToolComponent,
   validateSearch: (search: Record<string, unknown>) => {
     return {
-      mcpId:
-        typeof search.mcpId === 'number'
-          ? search.mcpId
-          : undefined,
+      mcpId: typeof search.mcpId === 'number' ? search.mcpId : undefined,
     };
   },
 });
@@ -49,9 +42,7 @@ function NewToolComponent() {
       setSchemaError(null);
       return parsed as Record<string, unknown>;
     } catch (err) {
-      setSchemaError(
-        err instanceof Error ? err.message : 'Invalid JSON',
-      );
+      setSchemaError(err instanceof Error ? err.message : 'Invalid JSON');
       return null;
     }
   }

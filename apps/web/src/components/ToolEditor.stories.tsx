@@ -30,7 +30,7 @@ function Wrapper(props: { isPending?: boolean }) {
     JSON.stringify({ type: 'object', properties: {} }, null, 2),
   );
   const [postProcessJs, setPostProcessJs] = useState('');
-  const [schemaError, setSchemaError] = useState<string | null>(null);
+  const [schemaError, _setSchemaError] = useState<string | null>(null);
 
   return (
     <ToolEditor

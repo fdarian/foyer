@@ -9,8 +9,7 @@ export function createDatabaseClient() {
     }
     return createPostgresClient(url);
   }
-  const path =
-    process.env.DATABASE_LITE_PATH ?? 'services/engine/data/pglite/';
+  const path = process.env.DATABASE_LITE_PATH ?? 'services/engine/data/pglite/';
   return createPgliteClient(path);
 }
 

@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
-import { useCreateSource } from '../../lib/useApi';
 import { SourceForm } from '../../components/SourceForm';
+import { useCreateSource } from '../../lib/useApi';
 
 export const Route = createFileRoute('/sources/new')({
   component: NewSourceComponent,
@@ -25,9 +25,7 @@ function NewSourceComponent() {
       setConfigError(null);
       return parsed as Record<string, unknown>;
     } catch (err) {
-      setConfigError(
-        err instanceof Error ? err.message : 'Invalid JSON',
-      );
+      setConfigError(err instanceof Error ? err.message : 'Invalid JSON');
       return null;
     }
   }

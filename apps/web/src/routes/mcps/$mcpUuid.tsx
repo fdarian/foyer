@@ -1,10 +1,6 @@
-import { Link, createFileRoute } from '@tanstack/react-router';
-import {
-  useGetMcp,
-  useListTools,
-  useDeleteTool,
-} from '../../lib/useApi';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import { McpUrlCard } from '../../components/McpUrlCard';
+import { useDeleteTool, useGetMcp, useListTools } from '../../lib/useApi';
 
 export const Route = createFileRoute('/mcps/$mcpUuid')({
   component: McpDetailComponent,
@@ -15,8 +11,7 @@ function McpDetailComponent() {
   const mcpQuery = useGetMcp(params.mcpUuid);
   const toolsQuery = useListTools();
   const deleteTool = useDeleteTool();
-  const baseUrl =
-    import.meta.env.VITE_ENGINE_URL ?? 'http://localhost:3301';
+  const baseUrl = import.meta.env.VITE_ENGINE_URL ?? 'http://localhost:3301';
   const mcpUrl = `${baseUrl}/mcp/${params.mcpUuid}`;
 
   async function copyUrl() {
@@ -25,8 +20,7 @@ function McpDetailComponent() {
   }
 
   const mcpTools =
-    toolsQuery.data?.filter((tool) => tool.mcpId === mcpQuery.data?.id) ??
-    [];
+    toolsQuery.data?.filter((tool) => tool.mcpId === mcpQuery.data?.id) ?? [];
 
   return (
     <div className="space-y-6">
@@ -40,9 +34,7 @@ function McpDetailComponent() {
           <div>
             <h1 className="text-2xl font-bold">{mcpQuery.data.name}</h1>
             {mcpQuery.data.description && (
-              <p className="text-gray-600 mt-1">
-                {mcpQuery.data.description}
-              </p>
+              <p className="text-gray-600 mt-1">{mcpQuery.data.description}</p>
             )}
           </div>
 
@@ -81,9 +73,7 @@ function McpDetailComponent() {
                     <button
                       type="button"
                       onClick={() => {
-                        if (
-                          window.confirm(`Delete tool "${tool.name}"?`)
-                        ) {
+                        if (window.confirm(`Delete tool "${tool.name}"?`)) {
                           deleteTool.mutate(tool.uuid);
                         }
                       }}

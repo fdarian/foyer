@@ -1,6 +1,6 @@
+import { connections } from '@foyer/db/schema';
 import { eq } from 'drizzle-orm';
 import { Context, Effect, Layer } from 'effect';
-import { connections } from '@foyer/db/schema';
 import { DatabaseClient } from '../database.ts';
 import { SecretService } from '../secret/service.ts';
 
@@ -18,16 +18,14 @@ export interface ConnectionService {
     }>,
     Error
   >;
-  readonly create: (
-    input: {
-      readonly userId: string;
-      readonly provider: string;
-      readonly providerState: Record<string, unknown>;
-      readonly accessTokenSecretId?: number | null;
-      readonly refreshTokenSecretId?: number | null;
-      readonly expiresAt?: Date | null;
-    },
-  ) => Effect.Effect<
+  readonly create: (input: {
+    readonly userId: string;
+    readonly provider: string;
+    readonly providerState: Record<string, unknown>;
+    readonly accessTokenSecretId?: number | null;
+    readonly refreshTokenSecretId?: number | null;
+    readonly expiresAt?: Date | null;
+  }) => Effect.Effect<
     {
       readonly id: number;
       readonly uuid: string;
@@ -37,9 +35,7 @@ export interface ConnectionService {
     },
     Error
   >;
-  readonly accessToken: (
-    id: number,
-  ) => Effect.Effect<string | null, Error>;
+  readonly accessToken: (id: number) => Effect.Effect<string | null, Error>;
   readonly remove: (id: number) => Effect.Effect<void, Error>;
 }
 
@@ -54,7 +50,9 @@ export const ConnectionServiceLive = Layer.effect(
     const db = yield* DatabaseClient;
     const secretService = yield* SecretService;
 
-    const list = (userId: string): Effect.Effect<
+    const list = (
+      userId: string,
+    ): Effect.Effect<
       Array<{
         readonly id: number;
         readonly uuid: string;
@@ -71,16 +69,14 @@ export const ConnectionServiceLive = Layer.effect(
         db.select().from(connections).where(eq(connections.userId, userId)),
       );
 
-    const create = (
-      input: {
-        readonly userId: string;
-        readonly provider: string;
-        readonly providerState: Record<string, unknown>;
-        readonly accessTokenSecretId?: number | null;
-        readonly refreshTokenSecretId?: number | null;
-        readonly expiresAt?: Date | null;
-      },
-    ): Effect.Effect<
+    const create = (input: {
+      readonly userId: string;
+      readonly provider: string;
+      readonly providerState: Record<string, unknown>;
+      readonly accessTokenSecretId?: number | null;
+      readonly refreshTokenSecretId?: number | null;
+      readonly expiresAt?: Date | null;
+    }): Effect.Effect<
       {
         readonly id: number;
         readonly uuid: string;
@@ -123,7 +119,7 @@ export const ConnectionServiceLive = Layer.effect(
           db.select().from(connections).where(eq(connections.id, id)),
         );
         const row = rows[0];
-        if (!row || !row.accessTokenSecretId) return null;
+        if (!row?.accessTokenSecretId) return null;
 
         // v1: return the stored access token without refresh.
         // Refresh logic will be wired in a follow-up.

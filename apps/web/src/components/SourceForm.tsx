@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 
 export type SourceFormProps = {
   kind: 'mcp' | 'openapi' | 'graphql';
@@ -17,10 +17,7 @@ export type SourceFormProps = {
 
 export function SourceForm(props: SourceFormProps) {
   return (
-    <form
-      onSubmit={props.onSubmit}
-      className="space-y-4 max-w-lg"
-    >
+    <form onSubmit={props.onSubmit} className="space-y-4 max-w-lg">
       <div>
         <label className="block text-sm font-medium mb-1">Kind</label>
         {props.readOnlyKind ? (
@@ -34,7 +31,9 @@ export function SourceForm(props: SourceFormProps) {
           <select
             value={props.kind}
             onChange={(e) =>
-              props.onKindChange(e.target.value as 'mcp' | 'openapi' | 'graphql')
+              props.onKindChange(
+                e.target.value as 'mcp' | 'openapi' | 'graphql',
+              )
             }
             className="w-full rounded border px-3 py-2"
           >
@@ -55,9 +54,7 @@ export function SourceForm(props: SourceFormProps) {
         />
       </div>
       <div>
-        <label className="block text-sm font-medium mb-1">
-          Config (JSON)
-        </label>
+        <label className="block text-sm font-medium mb-1">Config (JSON)</label>
         <textarea
           value={props.configJson}
           onChange={(e) => props.onConfigJsonChange(e.target.value)}
@@ -68,7 +65,7 @@ export function SourceForm(props: SourceFormProps) {
           <p className="mt-1 text-sm text-red-600">{props.configError}</p>
         )}
         <p className="mt-1 text-xs text-gray-500">
-          Example for OpenAPI:{" "}
+          Example for OpenAPI:{' '}
           {JSON.stringify({ url: 'https://example.com/openapi.json' })}
         </p>
       </div>

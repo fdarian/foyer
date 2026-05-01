@@ -1,24 +1,23 @@
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import {
-  WebStandardStreamableHTTPServerTransport,
-} from '@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js';
-import { z } from 'zod';
-import { Effect } from 'effect';
-import {
-  HttpServerRequest,
+  type HttpLayerRouter,
+  type HttpServerRequest,
   HttpServerResponse,
-  HttpLayerRouter,
 } from '@effect/platform';
-import { eq } from 'drizzle-orm';
+import { makeExecutorToolInvoker } from '@executor-js/execution/core';
+import { makeQuickJsExecutor } from '@executor-js/runtime-quickjs';
 import { mcps, sources, tools } from '@foyer/db/schema';
 import {
-  withExecutor,
-  addOpenApiSource,
-  addMcpSource,
   addGraphqlSource,
+  addMcpSource,
+  addOpenApiSource,
+  withExecutor,
 } from '@foyer/executor';
-import { makeQuickJsExecutor } from '@executor-js/runtime-quickjs';
-import { makeExecutorToolInvoker } from '@executor-js/execution/core';
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { WebStandardStreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js';
+import { eq } from 'drizzle-orm';
+import { Effect } from 'effect';
+import { z } from 'zod';
+
 const cache = new Map<
   string,
   { server: McpServer; transport: WebStandardStreamableHTTPServerTransport }
@@ -33,23 +32,14 @@ export function invalidateMcpCache(mcpUuid: string) {
   }
 }
 
-async function buildMcpServer(
-  mcpUuid: string,
-  db: any,
-) {
-  const mcpRows = await db
-    .select()
-    .from(mcps)
-    .where(eq(mcps.uuid, mcpUuid));
+async function buildMcpServer(mcpUuid: string, db: any) {
+  const mcpRows = await db.select().from(mcps).where(eq(mcps.uuid, mcpUuid));
   const mcp = mcpRows[0];
   if (!mcp) {
     throw new Error('MCP not found');
   }
 
-  const toolRows = await db
-    .select()
-    .from(tools)
-    .where(eq(tools.mcpId, mcp.id));
+  const toolRows = await db.select().from(tools).where(eq(tools.mcpId, mcp.id));
 
   const server = new McpServer(
     { name: mcp.name, version: '1.0.0' },
@@ -94,9 +84,7 @@ async function buildMcpServer(
                       const specText = yield* Effect.tryPromise({
                         try: () => fetch(specUrl).then((r) => r.text()),
                         catch: (cause) =>
-                          new Error(
-                            `Failed to fetch spec: ${String(cause)}`,
-                          ),
+                          new Error(`Failed to fetch spec: ${String(cause)}`),
                       });
                       yield* addOpenApiSource(executor, {
                         spec: specText,
@@ -141,18 +129,12 @@ async function buildMcpServer(
                       (t) =>
                         t.name === toolRow.sourceOperation ||
                         t.id === toolRow.sourceOperation ||
-                        t.name.endsWith(
-                          `.${toolRow.sourceOperation}`,
-                        ) ||
-                        t.id.endsWith(
-                          `.${toolRow.sourceOperation}`,
-                        ),
+                        t.name.endsWith(`.${toolRow.sourceOperation}`) ||
+                        t.id.endsWith(`.${toolRow.sourceOperation}`),
                     );
                     if (!targetTool) {
                       return yield* Effect.fail(
-                        new Error(
-                          `Tool ${toolRow.sourceOperation} not found`,
-                        ),
+                        new Error(`Tool ${toolRow.sourceOperation} not found`),
                       );
                     }
 
@@ -168,23 +150,18 @@ async function buildMcpServer(
                         invocationResult.error !== null
                           ? JSON.stringify(invocationResult.error)
                           : String(invocationResult.error);
-                      return yield* Effect.fail(
-                        new Error(errorText),
-                      );
+                      return yield* Effect.fail(new Error(errorText));
                     }
 
                     let finalResult = invocationResult.data;
 
                     if (toolRow.postProcessJs) {
                       const quickJs = makeQuickJsExecutor();
-                      const invoker = makeExecutorToolInvoker(
-                        executor,
-                        {
-                          invokeOptions: {
-                            onElicitation: 'accept-all',
-                          },
+                      const invoker = makeExecutorToolInvoker(executor, {
+                        invokeOptions: {
+                          onElicitation: 'accept-all',
                         },
-                      );
+                      });
                       const wrappedCode = [
                         'const input = ',
                         JSON.stringify(args),
@@ -201,9 +178,7 @@ async function buildMcpServer(
                         invoker,
                       );
                       if (jsResult.error) {
-                        return yield* Effect.fail(
-                          new Error(jsResult.error),
-                        );
+                        return yield* Effect.fail(new Error(jsResult.error));
                       }
                       finalResult = jsResult.result;
                     }
@@ -246,12 +221,11 @@ async function buildMcpServer(
 }
 
 export function handleMcpRequest(
-  db: any,
+  _db: any,
 ): Effect.Effect<
   HttpServerResponse.HttpServerResponse,
   Error,
-  | HttpServerRequest.HttpServerRequest
-  | HttpLayerRouter.RouteContext
+  HttpServerRequest.HttpServerRequest | HttpLayerRouter.RouteContext
 > {
   return Effect.gen(function* () {
     return HttpServerResponse.text('hello');

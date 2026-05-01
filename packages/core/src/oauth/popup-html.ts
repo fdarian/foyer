@@ -14,7 +14,9 @@ export interface OAuthPopupResult<TAuth> {
   readonly auth?: TAuth;
 }
 
-export const isOAuthPopupResult = (value: unknown): value is OAuthPopupResult<unknown> =>
+export const isOAuthPopupResult = (
+  value: unknown,
+): value is OAuthPopupResult<unknown> =>
   typeof value === 'object' &&
   value !== null &&
   'type' in value &&

@@ -1,8 +1,8 @@
+import { oauth2Sessions, secrets } from '@foyer/db/schema';
 import { eq } from 'drizzle-orm';
 import { Context, Effect, Layer, Schema } from 'effect';
-import { oauth2Sessions, secrets } from '@foyer/db/schema';
-import { DatabaseClient } from '../database.ts';
 import { ConnectionService } from '../connection/service.ts';
+import { DatabaseClient } from '../database.ts';
 import { SecretService } from '../secret/service.ts';
 import {
   buildAuthorizationUrl,
@@ -12,39 +12,33 @@ import {
 } from './helpers.ts';
 
 export interface OAuthService {
-  readonly probe: (
-    endpoint: string,
-  ) => Effect.Effect<
+  readonly probe: (endpoint: string) => Effect.Effect<
     {
       readonly supportsOAuth: boolean;
       readonly authorizationServerUrl: string | null;
     },
     Error
   >;
-  readonly start: (
-    input: {
-      readonly endpoint: string;
-      readonly connectionId: string;
-      readonly redirectUrl: string;
-      readonly provider: string;
-      readonly userId: string;
-      readonly scopes?: string[];
-      readonly clientId?: string;
-      readonly clientSecret?: string;
-      readonly authorizationEndpoint?: string;
-      readonly tokenEndpoint?: string;
-    },
-  ) => Effect.Effect<
+  readonly start: (input: {
+    readonly endpoint: string;
+    readonly connectionId: string;
+    readonly redirectUrl: string;
+    readonly provider: string;
+    readonly userId: string;
+    readonly scopes?: string[];
+    readonly clientId?: string;
+    readonly clientSecret?: string;
+    readonly authorizationEndpoint?: string;
+    readonly tokenEndpoint?: string;
+  }) => Effect.Effect<
     { readonly sessionId: string; readonly authorizationUrl: string },
     Error
   >;
-  readonly complete: (
-    input: {
-      readonly state: string;
-      readonly code?: string;
-      readonly error?: string;
-    },
-  ) => Effect.Effect<
+  readonly complete: (input: {
+    readonly state: string;
+    readonly code?: string;
+    readonly error?: string;
+  }) => Effect.Effect<
     { readonly connectionId: string; readonly expiresAt: number | null },
     Error
   >;
@@ -141,20 +135,18 @@ export const OAuthServiceLive = Layer.effect(
         };
       });
 
-    const start = (
-      input: {
-        readonly endpoint: string;
-        readonly connectionId: string;
-        readonly redirectUrl: string;
-        readonly provider: string;
-        readonly userId: string;
-        readonly scopes?: string[];
-        readonly clientId?: string;
-        readonly clientSecret?: string;
-        readonly authorizationEndpoint?: string;
-        readonly tokenEndpoint?: string;
-      },
-    ): Effect.Effect<
+    const start = (input: {
+      readonly endpoint: string;
+      readonly connectionId: string;
+      readonly redirectUrl: string;
+      readonly provider: string;
+      readonly userId: string;
+      readonly scopes?: string[];
+      readonly clientId?: string;
+      readonly clientSecret?: string;
+      readonly authorizationEndpoint?: string;
+      readonly tokenEndpoint?: string;
+    }): Effect.Effect<
       { readonly sessionId: string; readonly authorizationUrl: string },
       Error
     > =>
@@ -217,13 +209,11 @@ export const OAuthServiceLive = Layer.effect(
         return { sessionId, authorizationUrl };
       });
 
-    const complete = (
-      input: {
-        readonly state: string;
-        readonly code?: string;
-        readonly error?: string;
-      },
-    ): Effect.Effect<
+    const complete = (input: {
+      readonly state: string;
+      readonly code?: string;
+      readonly error?: string;
+    }): Effect.Effect<
       { readonly connectionId: string; readonly expiresAt: number | null },
       Error
     > =>
@@ -256,15 +246,11 @@ export const OAuthServiceLive = Layer.effect(
         }
         if (!input.code) {
           yield* deleteSession;
-          return yield* Effect.fail(
-            new Error('Missing authorization code'),
-          );
+          return yield* Effect.fail(new Error('Missing authorization code'));
         }
         if (session.expiresAt <= new Date()) {
           yield* deleteSession;
-          return yield* Effect.fail(
-            new Error('OAuth session expired'),
-          );
+          return yield* Effect.fail(new Error('OAuth session expired'));
         }
 
         const metadata = decodeSessionMetadata(session.metadata);
@@ -276,9 +262,7 @@ export const OAuthServiceLive = Layer.effect(
           redirectUrl: metadata.redirectUrl,
           codeVerifier: session.codeVerifier,
           code: input.code,
-        }).pipe(
-          Effect.tapError(() => deleteSession),
-        );
+        }).pipe(Effect.tapError(() => deleteSession));
 
         const expiresAt =
           typeof tokens.expires_in === 'number'
@@ -291,14 +275,13 @@ export const OAuthServiceLive = Layer.effect(
           userId: session.userId,
         });
 
-        const refreshSecret =
-          tokens.refresh_token
-            ? yield* secretService.put({
-                name: 'OAuth Refresh Token',
-                value: tokens.refresh_token,
-                userId: session.userId,
-              })
-            : null;
+        const refreshSecret = tokens.refresh_token
+          ? yield* secretService.put({
+              name: 'OAuth Refresh Token',
+              value: tokens.refresh_token,
+              userId: session.userId,
+            })
+          : null;
 
         const providerState: Record<string, unknown> = {
           kind: 'authorization-code',

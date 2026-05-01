@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
-import { useCreateMcp } from '../../lib/useApi';
 import { McpDefinitionForm } from '../../components/McpDefinitionForm';
+import { useCreateMcp } from '../../lib/useApi';
 
 export const Route = createFileRoute('/mcps/new')({
   component: NewMcpComponent,

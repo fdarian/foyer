@@ -51,7 +51,10 @@ export function useUpdateMcp() {
       payload: { name?: string; description?: string };
     }) =>
       runAdmin((api) =>
-        api.admin.updateMcp({ path: { uuid: input.uuid }, payload: input.payload }),
+        api.admin.updateMcp({
+          path: { uuid: input.uuid },
+          payload: input.payload,
+        }),
       ),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['mcps'] });

@@ -14,7 +14,7 @@ function Wrapper(props: { isPending?: boolean; readOnlyKind?: boolean }) {
   const [kind, setKind] = useState<'mcp' | 'openapi' | 'graphql'>('openapi');
   const [name, setName] = useState('');
   const [configJson, setConfigJson] = useState('{}');
-  const [configError, setConfigError] = useState<string | null>(null);
+  const [configError, _setConfigError] = useState<string | null>(null);
 
   return (
     <SourceForm

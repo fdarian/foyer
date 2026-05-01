@@ -1,5 +1,5 @@
-import React from 'react';
 import Editor from '@monaco-editor/react';
+import type React from 'react';
 
 export type McpOption = { id: number; name: string };
 export type SourceOption = { id: number; name: string; kind: string };
@@ -31,10 +31,7 @@ export type ToolEditorProps = {
 
 export function ToolEditor(props: ToolEditorProps) {
   return (
-    <form
-      onSubmit={props.onSubmit}
-      className="space-y-4"
-    >
+    <form onSubmit={props.onSubmit} className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium mb-1">MCP</label>
@@ -82,9 +79,7 @@ export function ToolEditor(props: ToolEditorProps) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">
-          Description
-        </label>
+        <label className="block text-sm font-medium mb-1">Description</label>
         <textarea
           value={props.description}
           onChange={(e) => props.onDescriptionChange(e.target.value)}

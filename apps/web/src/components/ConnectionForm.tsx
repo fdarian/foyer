@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 
 export type ConnectionFormProps = {
   tab: 'apikey' | 'oauth';
@@ -62,14 +62,9 @@ export function ConnectionForm(props: ConnectionFormProps) {
       </div>
 
       {props.tab === 'apikey' && (
-        <form
-          onSubmit={props.onApiKeySubmit}
-          className="space-y-4 max-w-md"
-        >
+        <form onSubmit={props.onApiKeySubmit} className="space-y-4 max-w-md">
           <div>
-            <label className="block text-sm font-medium mb-1">
-              Provider
-            </label>
+            <label className="block text-sm font-medium mb-1">Provider</label>
             <input
               type="text"
               value={props.apiProvider}
@@ -80,9 +75,7 @@ export function ConnectionForm(props: ConnectionFormProps) {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">
-              API Key
-            </label>
+            <label className="block text-sm font-medium mb-1">API Key</label>
             <input
               type="password"
               value={props.apiKey}
@@ -104,9 +97,7 @@ export function ConnectionForm(props: ConnectionFormProps) {
       {props.tab === 'oauth' && (
         <div className="space-y-4 max-w-lg">
           <div>
-            <label className="block text-sm font-medium mb-1">
-              Provider
-            </label>
+            <label className="block text-sm font-medium mb-1">Provider</label>
             <input
               type="text"
               value={props.oauthProvider}
@@ -116,9 +107,7 @@ export function ConnectionForm(props: ConnectionFormProps) {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">
-              Endpoint
-            </label>
+            <label className="block text-sm font-medium mb-1">Endpoint</label>
             <input
               type="text"
               value={props.endpoint}
@@ -128,9 +117,7 @@ export function ConnectionForm(props: ConnectionFormProps) {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">
-              Client ID
-            </label>
+            <label className="block text-sm font-medium mb-1">Client ID</label>
             <input
               type="text"
               value={props.clientId}

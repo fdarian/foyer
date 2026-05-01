@@ -69,12 +69,8 @@
           "name": "connections_accessTokenSecretId_secrets_id_fk",
           "tableFrom": "connections",
           "tableTo": "secrets",
-          "columnsFrom": [
-            "accessTokenSecretId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["accessTokenSecretId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -82,12 +78,8 @@
           "name": "connections_refreshTokenSecretId_secrets_id_fk",
           "tableFrom": "connections",
           "tableTo": "secrets",
-          "columnsFrom": [
-            "refreshTokenSecretId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["refreshTokenSecretId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -97,9 +89,7 @@
         "connections_uuid_unique": {
           "name": "connections_uuid_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "uuid"
-          ]
+          "columns": ["uuid"]
         }
       },
       "policies": {},
@@ -154,9 +144,7 @@
         "mcps_uuid_unique": {
           "name": "mcps_uuid_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "uuid"
-          ]
+          "columns": ["uuid"]
         }
       },
       "policies": {},
@@ -217,9 +205,7 @@
         "oauth2_sessions_state_unique": {
           "name": "oauth2_sessions_state_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "state"
-          ]
+          "columns": ["state"]
         }
       },
       "policies": {},
@@ -285,12 +271,8 @@
           "name": "secrets_ownedByConnectionId_connections_id_fk",
           "tableFrom": "secrets",
           "tableTo": "connections",
-          "columnsFrom": [
-            "ownedByConnectionId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["ownedByConnectionId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -300,9 +282,7 @@
         "secrets_uuid_unique": {
           "name": "secrets_uuid_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "uuid"
-          ]
+          "columns": ["uuid"]
         }
       },
       "policies": {},
@@ -369,12 +349,8 @@
           "name": "sources_connectionId_connections_id_fk",
           "tableFrom": "sources",
           "tableTo": "connections",
-          "columnsFrom": [
-            "connectionId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["connectionId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -384,9 +360,7 @@
         "sources_uuid_unique": {
           "name": "sources_uuid_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "uuid"
-          ]
+          "columns": ["uuid"]
         }
       },
       "policies": {},
@@ -464,12 +438,8 @@
           "name": "tools_mcpId_mcps_id_fk",
           "tableFrom": "tools",
           "tableTo": "mcps",
-          "columnsFrom": [
-            "mcpId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["mcpId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -477,12 +447,8 @@
           "name": "tools_sourceId_sources_id_fk",
           "tableFrom": "tools",
           "tableTo": "sources",
-          "columnsFrom": [
-            "sourceId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["sourceId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -492,9 +458,7 @@
         "tools_uuid_unique": {
           "name": "tools_uuid_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "uuid"
-          ]
+          "columns": ["uuid"]
         }
       },
       "policies": {},
@@ -506,11 +470,7 @@
     "public.source_kind": {
       "name": "source_kind",
       "schema": "public",
-      "values": [
-        "mcp",
-        "openapi",
-        "graphql"
-      ]
+      "values": ["mcp", "openapi", "graphql"]
     }
   },
   "schemas": {},
