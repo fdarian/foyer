@@ -4,6 +4,7 @@ import {
   useListTools,
   useDeleteTool,
 } from '../../lib/useApi';
+import { McpUrlCard } from '../../components/McpUrlCard';
 
 export const Route = createFileRoute('/mcps/$mcpUuid')({
   component: McpDetailComponent,
@@ -45,21 +46,7 @@ function McpDetailComponent() {
             )}
           </div>
 
-          <div className="rounded border bg-white p-4">
-            <div className="text-sm font-medium mb-2">MCP URL</div>
-            <div className="flex items-center gap-2">
-              <code className="flex-1 rounded bg-gray-100 px-3 py-2 text-sm">
-                {mcpUrl}
-              </code>
-              <button
-                type="button"
-                onClick={copyUrl}
-                className="rounded bg-blue-600 px-3 py-2 text-sm text-white hover:bg-blue-700"
-              >
-                Copy
-              </button>
-            </div>
-          </div>
+          <McpUrlCard mcpUrl={mcpUrl} onCopy={copyUrl} />
 
           <div>
             <div className="flex items-center justify-between mb-3">
