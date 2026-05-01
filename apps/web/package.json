@@ -1,0 +1,34 @@
+{
+  "name": "@foyer/web",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check:tsc": "tsgo --noEmit",
+    "check:lint": "biome check"
+  },
+  "dependencies": {
+    "@effect/platform": "catalog:",
+    "@foyer/core": "workspace:*",
+    "@monaco-editor/react": "catalog:",
+    "@tanstack/react-query": "catalog:",
+    "@tanstack/react-router": "catalog:",
+    "effect": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "tailwindcss": "catalog:"
+  },
+  "devDependencies": {
+    "@foyer/config": "workspace:*",
+    "@tailwindcss/vite": "catalog:",
+    "@tanstack/router-plugin": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@typescript/native-preview": "^7.0.0-dev.20260501.1",
+    "@vitejs/plugin-react": "catalog:",
+    "vite": "catalog:",
+    "vite-tsconfig-paths": "catalog:"
+  }
+}
