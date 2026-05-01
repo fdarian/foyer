@@ -27,7 +27,22 @@ function findPackageJsonFiles(dir: string): string[] {
   return files;
 }
 
+function resolveVersion(
+  name: string,
+  declared: string,
+  catalog: Record<string, string> | undefined,
+): string {
+  if (declared === 'catalog:') {
+    return catalog?.[name] ?? declared;
+  }
+  return declared;
+}
+
 const drifts: Array<{ file: string; name: string; version: string }> = [];
+
+const rootContent = fs.readFileSync('package.json', 'utf-8');
+const rootPkg = JSON.parse(rootContent);
+const catalog = rootPkg.catalog;
 
 for (const workspace of WORKSPACES) {
   const files = findPackageJsonFiles(workspace);
@@ -46,7 +61,8 @@ for (const workspace of WORKSPACES) {
     const depEntries = Object.entries(allDeps);
     for (const entry of depEntries) {
       const name = entry[0];
-      const version = entry[1];
+      const declared = entry[1] as string;
+      const version = resolveVersion(name, declared, catalog);
       if (name.startsWith(PREFIX) && version !== EXPECTED_VERSION) {
         drifts.push({ file: file, name: name, version: version });
       }
@@ -54,9 +70,6 @@ for (const workspace of WORKSPACES) {
   }
 }
 
-const rootContent = fs.readFileSync('package.json', 'utf-8');
-const rootPkg = JSON.parse(rootContent);
-const catalog = rootPkg.catalog;
 if (catalog) {
   const catalogEntries = Object.entries(catalog);
   for (const entry of catalogEntries) {

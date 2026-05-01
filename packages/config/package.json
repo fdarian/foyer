@@ -7,6 +7,9 @@
     "./tsconfig.bun.json": "./tsconfig.bun.json",
     "./tsconfig.lib.json": "./tsconfig.lib.json"
   },
+  "scripts": {
+    "check:pins": "bun run ../../scripts/check-executor-pins.ts"
+  },
   "devDependencies": {
     "@total-typescript/tsconfig": "catalog:"
   }

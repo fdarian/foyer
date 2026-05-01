@@ -3,8 +3,9 @@
   "tasks": {
     "check:tsc": {},
     "check:lint": {},
+    "check:pins": {},
     "check": {
-      "dependsOn": ["check:tsc", "check:lint"]
+      "dependsOn": ["check:tsc", "check:lint", "check:pins"]
     },
     "dev": {
       "cache": false,

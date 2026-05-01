@@ -8,12 +8,17 @@
     "packages/*"
   ],
   "scripts": {
+    "dev": "turbo dev",
+    "check": "turbo check",
     "format": "biome check --write"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.3.15",
     "@typescript/native-preview": "^7.0.0-dev.20260214.1",
-    "turbo": "^2.8.8"
+    "@types/node": "catalog:",
+    "bun-types": "catalog:",
+    "turbo": "^2.8.8",
+    "typescript": "catalog:"
   },
   "catalog": {
     "effect": "^3.19.15",
