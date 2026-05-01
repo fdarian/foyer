@@ -1,6 +1,5 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useState, useEffect } from 'react';
-import Editor from '@monaco-editor/react';
 import {
   useGetTool,
   useUpdateTool,
@@ -8,6 +7,7 @@ import {
   useListMcps,
   useListSources,
 } from '../../lib/useApi';
+import { ToolEditor } from '../../components/ToolEditor';
 
 export const Route = createFileRoute('/tools/$toolUuid')({
   component: ToolDetailComponent,
@@ -70,7 +70,27 @@ function ToolDetailComponent() {
       )}
 
       {toolQuery.data && (
-        <form
+        <ToolEditor
+          mcps={mcpsQuery.data ?? []}
+          sources={sourcesQuery.data ?? []}
+          mcpId={mcpId}
+          sourceId={sourceId}
+          name={name}
+          description={description}
+          sourceOperation={sourceOperation}
+          inputSchema={inputSchema}
+          postProcessJs={postProcessJs}
+          schemaError={schemaError}
+          onMcpIdChange={setMcpId}
+          onSourceIdChange={setSourceId}
+          onNameChange={setName}
+          onDescriptionChange={setDescription}
+          onSourceOperationChange={setSourceOperation}
+          onInputSchemaChange={setInputSchema}
+          onPostProcessJsChange={setPostProcessJs}
+          isPending={updateTool.isPending}
+          submitLabel="Save"
+          pendingLabel="Saving..."
           onSubmit={(e) => {
             e.preventDefault();
             const schema = parseSchema();
@@ -107,137 +127,7 @@ function ToolDetailComponent() {
               },
             );
           }}
-          className="space-y-4"
-        >
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">MCP</label>
-              <select
-                value={mcpId}
-                onChange={(e) => setMcpId(Number(e.target.value))}
-                required
-                className="w-full rounded border px-3 py-2"
-              >
-                <option value={0}>Select MCP...</option>
-                {mcpsQuery.data?.map((mcp) => (
-                  <option key={mcp.id} value={mcp.id}>
-                    {mcp.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Source
-              </label>
-              <select
-                value={sourceId}
-                onChange={(e) => setSourceId(Number(e.target.value))}
-                required
-                className="w-full rounded border px-3 py-2"
-              >
-                <option value={0}>Select source...</option>
-                {sourcesQuery.data?.map((source) => (
-                  <option key={source.id} value={source.id}>
-                    {source.name} ({source.kind})
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-1">Name</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              className="w-full rounded border px-3 py-2"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-1">
-              Description
-            </label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={2}
-              className="w-full rounded border px-3 py-2"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-1">
-              Source Operation
-            </label>
-            <input
-              type="text"
-              value={sourceOperation}
-              onChange={(e) => setSourceOperation(e.target.value)}
-              required
-              placeholder="e.g. getPetById or query.pets"
-              className="w-full rounded border px-3 py-2"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-1">
-              Input Schema (JSON)
-            </label>
-            <div
-              className="rounded border overflow-hidden"
-              style={{ height: 240 }}
-            >
-              <Editor
-                language="json"
-                value={inputSchema}
-                onChange={(value) => setInputSchema(value ?? '')}
-                options={{
-                  minimap: { enabled: false },
-                  lineNumbers: 'on',
-                  scrollBeyondLastLine: false,
-                }}
-                theme="vs"
-              />
-            </div>
-            {schemaError && (
-              <p className="mt-1 text-sm text-red-600">{schemaError}</p>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-1">
-              Post-Process JS (optional)
-            </label>
-            <div
-              className="rounded border overflow-hidden"
-              style={{ height: 240 }}
-            >
-              <Editor
-                language="javascript"
-                value={postProcessJs}
-                onChange={(value) => setPostProcessJs(value ?? '')}
-                options={{
-                  minimap: { enabled: false },
-                  lineNumbers: 'on',
-                  scrollBeyondLastLine: false,
-                }}
-                theme="vs"
-              />
-            </div>
-          </div>
-
-          <div className="flex gap-3">
-            <button
-              type="submit"
-              disabled={updateTool.isPending}
-              className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:opacity-50"
-            >
-              {updateTool.isPending ? 'Saving...' : 'Save'}
-            </button>
+          extraActions={
             <button
               type="button"
               onClick={() => {
@@ -253,8 +143,8 @@ function ToolDetailComponent() {
             >
               Delete
             </button>
-          </div>
-        </form>
+          }
+        />
       )}
     </div>
   );
