@@ -24,6 +24,7 @@ const routes = Layer.mergeAll(
   McpStubRoute,
   HttpLayerRouter.addHttpApi(FoyerApi, { openapiPath: '/spec.json' }),
   HttpApiScalar.layerHttpLayerRouter({ api: FoyerApi, path: '/' }),
+  HttpLayerRouter.cors(),
 );
 
 export const server = HttpLayerRouter.serve(routes);
