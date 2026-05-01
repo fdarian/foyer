@@ -2,6 +2,7 @@ import {
   bigint,
   bigserial,
   customType,
+  foreignKey,
   jsonb,
   pgEnum,
   pgTable,
@@ -11,7 +12,7 @@ import {
 } from 'drizzle-orm/pg-core';
 import { v7 as uuidv7 } from 'uuid';
 
-const bytea = customType<{ data: Buffer }>({
+const bytea = customType<{ data: Uint8Array }>({
   dataType() {
     return 'bytea';
   },
@@ -42,7 +43,7 @@ export const sources = pgTable('sources', {
   userId: text().notNull(),
   kind: sourceKind().notNull(),
   name: text().notNull(),
-  config: jsonb().notNull(),
+  config: jsonb().$type<Record<string, unknown>>().notNull(),
   connectionId: bigint({ mode: 'number' }).references(() => connections.id),
   createdAt: timestamp()
     .$defaultFn(() => new Date())
@@ -60,7 +61,7 @@ export const tools = pgTable('tools', {
     .references(() => mcps.id),
   name: text().notNull(),
   description: text(),
-  inputSchema: jsonb().notNull(),
+  inputSchema: jsonb().$type<Record<string, unknown>>().notNull(),
   sourceId: bigint({ mode: 'number' })
     .notNull()
     .references(() => sources.id),
@@ -79,32 +80,39 @@ export const connections = pgTable('connections', {
     .$defaultFn(() => uuidv7()),
   userId: text().notNull(),
   provider: text().notNull(),
-  accessTokenSecretId: bigint({ mode: 'number' }).references(() => secrets.id),
-  refreshTokenSecretId: bigint({ mode: 'number' }).references(() => secrets.id),
+  accessTokenSecretId: bigint({ mode: 'number' }),
+  refreshTokenSecretId: bigint({ mode: 'number' }),
   expiresAt: timestamp(),
-  providerState: jsonb().notNull(),
+  providerState: jsonb().$type<Record<string, unknown>>().notNull(),
   createdAt: timestamp()
     .$defaultFn(() => new Date())
     .notNull(),
 });
 
-export const secrets = pgTable('secrets', {
-  id: bigserial({ mode: 'number' }).primaryKey(),
-  uuid: uuid()
-    .notNull()
-    .unique()
-    .$defaultFn(() => uuidv7()),
-  userId: text().notNull(),
-  name: text().notNull(),
-  encryptedValue: bytea().notNull(),
-  iv: bytea().notNull(),
-  ownedByConnectionId: bigint({ mode: 'number' }).references(
-    () => connections.id,
-  ),
-  createdAt: timestamp()
-    .$defaultFn(() => new Date())
-    .notNull(),
-});
+export const secrets = pgTable(
+  'secrets',
+  {
+    id: bigserial({ mode: 'number' }).primaryKey(),
+    uuid: uuid()
+      .notNull()
+      .unique()
+      .$defaultFn(() => uuidv7()),
+    userId: text().notNull(),
+    name: text().notNull(),
+    encryptedValue: bytea().notNull(),
+    iv: bytea().notNull(),
+    ownedByConnectionId: bigint({ mode: 'number' }),
+    createdAt: timestamp()
+      .$defaultFn(() => new Date())
+      .notNull(),
+  },
+  (table) => [
+    foreignKey({
+      columns: [table.ownedByConnectionId],
+      foreignColumns: [connections.id],
+    }),
+  ],
+);
 
 export const oauth2Sessions = pgTable('oauth2_sessions', {
   id: bigserial({ mode: 'number' }).primaryKey(),
@@ -114,7 +122,7 @@ export const oauth2Sessions = pgTable('oauth2_sessions', {
   userId: text().notNull(),
   connectionId: text(),
   redirectUrl: text(),
-  metadata: jsonb(),
+  metadata: jsonb().$type<Record<string, unknown>>(),
   createdAt: timestamp()
     .$defaultFn(() => new Date())
     .notNull(),
