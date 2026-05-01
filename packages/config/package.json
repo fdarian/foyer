@@ -1,0 +1,13 @@
+{
+  "name": "@foyer/config",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./tsconfig.web.json": "./tsconfig.web.json",
+    "./tsconfig.bun.json": "./tsconfig.bun.json",
+    "./tsconfig.lib.json": "./tsconfig.lib.json"
+  },
+  "devDependencies": {
+    "@total-typescript/tsconfig": "catalog:"
+  }
+}
