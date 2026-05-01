@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { useCreateSource } from '../../lib/useApi';
+import { SourceForm } from '../../components/SourceForm';
 
 export const Route = createFileRoute('/sources/new')({
   component: NewSourceComponent,
@@ -34,7 +35,17 @@ function NewSourceComponent() {
   return (
     <div>
       <h1 className="text-2xl font-bold mb-4">New Source</h1>
-      <form
+      <SourceForm
+        kind={kind}
+        name={name}
+        configJson={configJson}
+        configError={configError}
+        onKindChange={setKind}
+        onNameChange={setName}
+        onConfigJsonChange={setConfigJson}
+        isPending={createSource.isPending}
+        submitLabel="Create"
+        pendingLabel="Creating..."
         onSubmit={(e) => {
           e.preventDefault();
           const config = parseConfig();
@@ -48,56 +59,7 @@ function NewSourceComponent() {
             },
           );
         }}
-        className="space-y-4 max-w-lg"
-      >
-        <div>
-          <label className="block text-sm font-medium mb-1">Kind</label>
-          <select
-            value={kind}
-            onChange={(e) =>
-              setKind(e.target.value as 'mcp' | 'openapi' | 'graphql')
-            }
-            className="w-full rounded border px-3 py-2"
-          >
-            <option value="openapi">OpenAPI</option>
-            <option value="mcp">MCP</option>
-            <option value="graphql">GraphQL</option>
-          </select>
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Name</label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            className="w-full rounded border px-3 py-2"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Config (JSON)</label>
-          <textarea
-            value={configJson}
-            onChange={(e) => setConfigJson(e.target.value)}
-            rows={8}
-            className="w-full rounded border px-3 py-2 font-mono text-sm"
-          />
-          {configError && (
-            <p className="mt-1 text-sm text-red-600">{configError}</p>
-          )}
-          <p className="mt-1 text-xs text-gray-500">
-            Example for OpenAPI:{' '}
-            {JSON.stringify({ url: 'https://example.com/openapi.json' })}
-          </p>
-        </div>
-        <button
-          type="submit"
-          disabled={createSource.isPending}
-          className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:opacity-50"
-        >
-          {createSource.isPending ? 'Creating...' : 'Create'}
-        </button>
-      </form>
+      />
     </div>
   );
 }

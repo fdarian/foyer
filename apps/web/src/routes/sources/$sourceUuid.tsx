@@ -5,6 +5,7 @@ import {
   useUpdateSource,
   useDeleteSource,
 } from '../../lib/useApi';
+import { SourceForm } from '../../components/SourceForm';
 
 export const Route = createFileRoute('/sources/$sourceUuid')({
   component: SourceDetailComponent,
@@ -55,63 +56,34 @@ function SourceDetailComponent() {
       )}
 
       {sourceQuery.data && (
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            const config = parseConfig();
-            if (!config) return;
-            updateSource.mutate(
-              { uuid: params.sourceUuid, payload: { name, config } },
-              {
-                onSuccess: () => {
-                  navigate({ to: '/sources' });
+        <>
+          <SourceForm
+            kind={sourceQuery.data.kind}
+            name={name}
+            configJson={configJson}
+            configError={configError}
+            onKindChange={() => {}}
+            onNameChange={setName}
+            onConfigJsonChange={setConfigJson}
+            isPending={updateSource.isPending}
+            submitLabel="Save"
+            pendingLabel="Saving..."
+            readOnlyKind
+            onSubmit={(e) => {
+              e.preventDefault();
+              const config = parseConfig();
+              if (!config) return;
+              updateSource.mutate(
+                { uuid: params.sourceUuid, payload: { name, config } },
+                {
+                  onSuccess: () => {
+                    navigate({ to: '/sources' });
+                  },
                 },
-              },
-            );
-          }}
-          className="space-y-4 max-w-lg"
-        >
-          <div>
-            <label className="block text-sm font-medium mb-1">Kind</label>
-            <input
-              type="text"
-              value={sourceQuery.data.kind}
-              disabled
-              className="w-full rounded border bg-gray-100 px-3 py-2"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Name</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              className="w-full rounded border px-3 py-2"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">
-              Config (JSON)
-            </label>
-            <textarea
-              value={configJson}
-              onChange={(e) => setConfigJson(e.target.value)}
-              rows={8}
-              className="w-full rounded border px-3 py-2 font-mono text-sm"
-            />
-            {configError && (
-              <p className="mt-1 text-sm text-red-600">{configError}</p>
-            )}
-          </div>
-          <div className="flex gap-3">
-            <button
-              type="submit"
-              disabled={updateSource.isPending}
-              className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:opacity-50"
-            >
-              {updateSource.isPending ? 'Saving...' : 'Save'}
-            </button>
+              );
+            }}
+          />
+          <div className="mt-4">
             <button
               type="button"
               onClick={() => {
@@ -128,7 +100,7 @@ function SourceDetailComponent() {
               Delete
             </button>
           </div>
-        </form>
+        </>
       )}
     </div>
   );
