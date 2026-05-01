@@ -6,6 +6,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "storybook": "storybook dev -p 6006",
     "check:tsc": "tsgo --noEmit",
     "check:lint": "biome check"
   },
@@ -29,6 +30,9 @@
     "@typescript/native-preview": "^7.0.0-dev.20260501.1",
     "@vitejs/plugin-react": "catalog:",
     "vite": "catalog:",
-    "vite-tsconfig-paths": "catalog:"
+    "vite-tsconfig-paths": "catalog:",
+    "storybook": "catalog:",
+    "@storybook/react-vite": "catalog:",
+    "@storybook/react": "catalog:"
   }
 }

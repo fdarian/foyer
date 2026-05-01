@@ -50,7 +50,10 @@
     "typescript": "^5.9.3",
     "tsup": "^8.4.0",
     "vitest": "^4.0.17",
-    "@effect/vitest": "^0.27.0"
+    "@effect/vitest": "^0.27.0",
+    "storybook": "^8.6.0",
+    "@storybook/react-vite": "^8.6.0",
+    "@storybook/react": "^8.6.0"
   },
   "overrides": {
     "@executor/config": "workspace:*"
