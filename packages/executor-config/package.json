@@ -1,0 +1,18 @@
+{
+  "name": "@executor/config",
+  "version": "1.4.3",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@effect/platform": "catalog:",
+    "effect": "catalog:",
+    "jsonc-parser": "^3.3.1"
+  },
+  "devDependencies": {
+    "@foyer/config": "workspace:*",
+    "@types/node": "catalog:"
+  }
+}

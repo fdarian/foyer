@@ -52,6 +52,9 @@
     "vitest": "^4.0.17",
     "@effect/vitest": "^0.27.0"
   },
+  "overrides": {
+    "@executor/config": "workspace:*"
+  },
   "patchedDependencies": {
     "@executor-js/sdk@0.0.1": "patches/@executor-js__sdk@0.0.1.patch"
   }
