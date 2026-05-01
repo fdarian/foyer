@@ -20,7 +20,6 @@ import { eq } from 'drizzle-orm';
 import {
   connections,
   mcps,
-  oauth2Sessions,
   sources,
   tools,
 } from '@foyer/db/schema';
