@@ -2,7 +2,7 @@ import * as BunHttpServer from '@effect/platform-bun/BunHttpServer';
 import * as BunRuntime from '@effect/platform-bun/BunRuntime';
 import { DatabaseClient } from '@foyer/core/database';
 import { createDatabaseClient, migratePglite } from '@foyer/db/client';
-import { Config, Layer } from 'effect';
+import { Config, type Effect, Layer } from 'effect';
 import { ApiLive, server } from '../src/server/main.ts';
 
 const pglitePath = new URL('../data/pglite', import.meta.url).pathname;
@@ -15,7 +15,10 @@ if (process.env.DATABASE_LITE !== 'false') {
     '../../../packages/db/drizzle',
     import.meta.url,
   ).pathname;
-  await migratePglite(client as any, migrationsPath);
+  await migratePglite(
+    client as Parameters<typeof migratePglite>[0],
+    migrationsPath,
+  );
 }
 
 const DatabaseClientLive = Layer.succeed(DatabaseClient, client);
@@ -38,4 +41,6 @@ const ServerLive = server.pipe(
   ),
 );
 
-Layer.launch(ServerLive).pipe(BunRuntime.runMain);
+BunRuntime.runMain(
+  Layer.launch(ServerLive) as Effect.Effect<never, never, never>,
+);

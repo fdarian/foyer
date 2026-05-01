@@ -29,8 +29,14 @@ const AdminApiLive = HttpApiBuilder.group(FoyerApi, 'admin', (handlers) =>
         const rows = yield* Effect.tryPromise(() =>
           db.select().from(mcps).where(eq(mcps.userId, userId)),
         );
-        return rows;
-      }),
+        return rows.map((row) => ({
+          id: row.id,
+          uuid: row.uuid,
+          name: row.name,
+          description: row.description,
+          createdAt: row.createdAt,
+        }));
+      }).pipe(Effect.orDie),
     )
     .handle('createMcp', (request) =>
       Effect.gen(function* () {
@@ -49,8 +55,14 @@ const AdminApiLive = HttpApiBuilder.group(FoyerApi, 'admin', (handlers) =>
         if (!row) {
           return yield* Effect.fail(new Error('Failed to create MCP'));
         }
-        return row;
-      }),
+        return {
+          id: row.id,
+          uuid: row.uuid,
+          name: row.name,
+          description: row.description,
+          createdAt: row.createdAt,
+        };
+      }).pipe(Effect.orDie),
     )
     .handle('getMcp', (request) =>
       Effect.gen(function* () {
@@ -62,8 +74,14 @@ const AdminApiLive = HttpApiBuilder.group(FoyerApi, 'admin', (handlers) =>
         if (!row) {
           return yield* Effect.fail(new Error('MCP not found'));
         }
-        return row;
-      }),
+        return {
+          id: row.id,
+          uuid: row.uuid,
+          name: row.name,
+          description: row.description,
+          createdAt: row.createdAt,
+        };
+      }).pipe(Effect.orDie),
     )
     .handle('updateMcp', (request) =>
       Effect.gen(function* () {
@@ -86,8 +104,14 @@ const AdminApiLive = HttpApiBuilder.group(FoyerApi, 'admin', (handlers) =>
         if (!row) {
           return yield* Effect.fail(new Error('MCP not found'));
         }
-        return row;
-      }),
+        return {
+          id: row.id,
+          uuid: row.uuid,
+          name: row.name,
+          description: row.description,
+          createdAt: row.createdAt,
+        };
+      }).pipe(Effect.orDie),
     )
     .handle('deleteMcp', (request) =>
       Effect.gen(function* () {
@@ -99,8 +123,14 @@ const AdminApiLive = HttpApiBuilder.group(FoyerApi, 'admin', (handlers) =>
         if (!row) {
           return yield* Effect.fail(new Error('MCP not found'));
         }
-        return row;
-      }),
+        return {
+          id: row.id,
+          uuid: row.uuid,
+          name: row.name,
+          description: row.description,
+          createdAt: row.createdAt,
+        };
+      }).pipe(Effect.orDie),
     )
     .handle('listSources', () =>
       Effect.gen(function* () {
@@ -108,8 +138,16 @@ const AdminApiLive = HttpApiBuilder.group(FoyerApi, 'admin', (handlers) =>
         const rows = yield* Effect.tryPromise(() =>
           db.select().from(sources).where(eq(sources.userId, userId)),
         );
-        return rows;
-      }),
+        return rows.map((row) => ({
+          id: row.id,
+          uuid: row.uuid,
+          kind: row.kind,
+          name: row.name,
+          config: row.config,
+          connectionId: row.connectionId,
+          createdAt: row.createdAt,
+        }));
+      }).pipe(Effect.orDie),
     )
     .handle('createSource', (request) =>
       Effect.gen(function* () {
@@ -130,8 +168,16 @@ const AdminApiLive = HttpApiBuilder.group(FoyerApi, 'admin', (handlers) =>
         if (!row) {
           return yield* Effect.fail(new Error('Failed to create source'));
         }
-        return row;
-      }),
+        return {
+          id: row.id,
+          uuid: row.uuid,
+          kind: row.kind,
+          name: row.name,
+          config: row.config,
+          connectionId: row.connectionId,
+          createdAt: row.createdAt,
+        };
+      }).pipe(Effect.orDie),
     )
     .handle('getSource', (request) =>
       Effect.gen(function* () {
@@ -143,8 +189,16 @@ const AdminApiLive = HttpApiBuilder.group(FoyerApi, 'admin', (handlers) =>
         if (!row) {
           return yield* Effect.fail(new Error('Source not found'));
         }
-        return row;
-      }),
+        return {
+          id: row.id,
+          uuid: row.uuid,
+          kind: row.kind,
+          name: row.name,
+          config: row.config,
+          connectionId: row.connectionId,
+          createdAt: row.createdAt,
+        };
+      }).pipe(Effect.orDie),
     )
     .handle('updateSource', (request) =>
       Effect.gen(function* () {
@@ -170,8 +224,16 @@ const AdminApiLive = HttpApiBuilder.group(FoyerApi, 'admin', (handlers) =>
         if (!row) {
           return yield* Effect.fail(new Error('Source not found'));
         }
-        return row;
-      }),
+        return {
+          id: row.id,
+          uuid: row.uuid,
+          kind: row.kind,
+          name: row.name,
+          config: row.config,
+          connectionId: row.connectionId,
+          createdAt: row.createdAt,
+        };
+      }).pipe(Effect.orDie),
     )
     .handle('deleteSource', (request) =>
       Effect.gen(function* () {
@@ -186,15 +248,23 @@ const AdminApiLive = HttpApiBuilder.group(FoyerApi, 'admin', (handlers) =>
         if (!row) {
           return yield* Effect.fail(new Error('Source not found'));
         }
-        return row;
-      }),
+        return {
+          id: row.id,
+          uuid: row.uuid,
+          kind: row.kind,
+          name: row.name,
+          config: row.config,
+          connectionId: row.connectionId,
+          createdAt: row.createdAt,
+        };
+      }).pipe(Effect.orDie),
     )
     .handle('listTools', () =>
       Effect.gen(function* () {
         const db = yield* DatabaseClient;
         const rows = yield* Effect.tryPromise(() => db.select().from(tools));
         return rows;
-      }),
+      }).pipe(Effect.orDie),
     )
     .handle('createTool', (request) =>
       Effect.gen(function* () {
@@ -218,7 +288,7 @@ const AdminApiLive = HttpApiBuilder.group(FoyerApi, 'admin', (handlers) =>
           return yield* Effect.fail(new Error('Failed to create tool'));
         }
         return row;
-      }),
+      }).pipe(Effect.orDie),
     )
     .handle('getTool', (request) =>
       Effect.gen(function* () {
@@ -231,7 +301,7 @@ const AdminApiLive = HttpApiBuilder.group(FoyerApi, 'admin', (handlers) =>
           return yield* Effect.fail(new Error('Tool not found'));
         }
         return row;
-      }),
+      }).pipe(Effect.orDie),
     )
     .handle('updateTool', (request) =>
       Effect.gen(function* () {
@@ -267,7 +337,7 @@ const AdminApiLive = HttpApiBuilder.group(FoyerApi, 'admin', (handlers) =>
           return yield* Effect.fail(new Error('Tool not found'));
         }
         return row;
-      }),
+      }).pipe(Effect.orDie),
     )
     .handle('deleteTool', (request) =>
       Effect.gen(function* () {
@@ -280,14 +350,14 @@ const AdminApiLive = HttpApiBuilder.group(FoyerApi, 'admin', (handlers) =>
           return yield* Effect.fail(new Error('Tool not found'));
         }
         return row;
-      }),
+      }).pipe(Effect.orDie),
     )
     .handle('listConnections', () =>
       Effect.gen(function* () {
         const service = yield* ConnectionService;
         const rows = yield* service.list(userId);
         return rows;
-      }),
+      }).pipe(Effect.orDie),
     )
     .handle('createConnection', (request) =>
       Effect.gen(function* () {
@@ -298,7 +368,7 @@ const AdminApiLive = HttpApiBuilder.group(FoyerApi, 'admin', (handlers) =>
           providerState: request.payload.providerState,
         });
         return row;
-      }),
+      }).pipe(Effect.orDie),
     )
     .handle('getConnection', (request) =>
       Effect.gen(function* () {
@@ -313,8 +383,17 @@ const AdminApiLive = HttpApiBuilder.group(FoyerApi, 'admin', (handlers) =>
         if (!row) {
           return yield* Effect.fail(new Error('Connection not found'));
         }
-        return row;
-      }),
+        return {
+          id: row.id,
+          uuid: row.uuid,
+          provider: row.provider,
+          accessTokenSecretId: row.accessTokenSecretId,
+          refreshTokenSecretId: row.refreshTokenSecretId,
+          expiresAt: row.expiresAt,
+          providerState: row.providerState,
+          createdAt: row.createdAt,
+        };
+      }).pipe(Effect.orDie),
     )
     .handle('updateConnection', (request) =>
       Effect.gen(function* () {
@@ -337,8 +416,17 @@ const AdminApiLive = HttpApiBuilder.group(FoyerApi, 'admin', (handlers) =>
         if (!row) {
           return yield* Effect.fail(new Error('Connection not found'));
         }
-        return row;
-      }),
+        return {
+          id: row.id,
+          uuid: row.uuid,
+          provider: row.provider,
+          accessTokenSecretId: row.accessTokenSecretId,
+          refreshTokenSecretId: row.refreshTokenSecretId,
+          expiresAt: row.expiresAt,
+          providerState: row.providerState,
+          createdAt: row.createdAt,
+        };
+      }).pipe(Effect.orDie),
     )
     .handle('deleteConnection', (request) =>
       Effect.gen(function* () {
@@ -353,8 +441,17 @@ const AdminApiLive = HttpApiBuilder.group(FoyerApi, 'admin', (handlers) =>
         if (!row) {
           return yield* Effect.fail(new Error('Connection not found'));
         }
-        return row;
-      }),
+        return {
+          id: row.id,
+          uuid: row.uuid,
+          provider: row.provider,
+          accessTokenSecretId: row.accessTokenSecretId,
+          refreshTokenSecretId: row.refreshTokenSecretId,
+          expiresAt: row.expiresAt,
+          providerState: row.providerState,
+          createdAt: row.createdAt,
+        };
+      }).pipe(Effect.orDie),
     ),
 );
 
@@ -369,14 +466,16 @@ const OAuthApiLive = HttpApiBuilder.group(FoyerApi, 'oauth', (handlers) =>
           redirectUrl: request.payload.redirectUrl,
           provider: request.payload.provider,
           userId,
-          scopes: request.payload.scopes,
+          scopes: request.payload.scopes
+            ? [...request.payload.scopes]
+            : undefined,
           clientId: request.payload.clientId,
           clientSecret: request.payload.clientSecret,
           authorizationEndpoint: request.payload.authorizationEndpoint,
           tokenEndpoint: request.payload.tokenEndpoint,
         });
         return result;
-      }),
+      }).pipe(Effect.orDie),
     )
     .handle('callback', (request) =>
       Effect.gen(function* () {
@@ -398,7 +497,7 @@ const OAuthApiLive = HttpApiBuilder.group(FoyerApi, 'oauth', (handlers) =>
         return HttpServerResponse.raw(html, {
           contentType: 'text/html',
         });
-      }),
+      }).pipe(Effect.orDie),
     ),
 );
 
