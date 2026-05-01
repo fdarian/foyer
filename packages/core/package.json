@@ -1,0 +1,16 @@
+{
+  "name": "@foyer/core",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./api": "./src/api/index.ts"
+  },
+  "dependencies": {
+    "@effect/platform": "catalog:",
+    "effect": "catalog:"
+  },
+  "devDependencies": {
+    "@foyer/config": "workspace:*",
+    "@typescript/native-preview": "^7.0.0-dev.20260501.1"
+  }
+}
