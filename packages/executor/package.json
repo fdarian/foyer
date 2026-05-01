@@ -1,0 +1,21 @@
+{
+  "name": "@foyer/executor",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@executor-js/sdk": "0.0.1",
+    "@executor-js/execution": "0.0.1",
+    "@executor-js/runtime-quickjs": "0.0.1",
+    "@executor-js/plugin-mcp": "0.0.1",
+    "@executor-js/plugin-openapi": "0.0.1",
+    "@executor-js/plugin-graphql": "0.0.1",
+    "@foyer/core": "workspace:*",
+    "effect": "catalog:"
+  },
+  "devDependencies": {
+    "@foyer/config": "workspace:*"
+  }
+}
