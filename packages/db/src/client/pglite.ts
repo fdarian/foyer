@@ -3,8 +3,18 @@ import { dirname } from 'node:path';
 import { PGlite } from '@electric-sql/pglite';
 import { drizzle } from 'drizzle-orm/pglite';
 
-export const createPgliteClient = (path: string) => {
+export const createPgliteClient = (
+  path: string,
+  options?: {
+    fsBundle?: Blob | File;
+    wasmModule?: WebAssembly.Module;
+  },
+) => {
   mkdirSync(dirname(path), { recursive: true });
-  const client = new PGlite(path);
+  const client = new PGlite({
+    dataDir: path,
+    fsBundle: options?.fsBundle,
+    wasmModule: options?.wasmModule,
+  });
   return drizzle(client);
 };

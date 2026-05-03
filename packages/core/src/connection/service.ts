@@ -81,7 +81,9 @@ export const ConnectionServiceLive = Layer.effect(
             accessTokenSecretId: row.accessTokenSecretId,
             refreshTokenSecretId: row.refreshTokenSecretId,
             expiresAt: row.expiresAt,
-            providerState: row.providerState as Readonly<Record<string, unknown>>,
+            providerState: row.providerState as Readonly<
+              Record<string, unknown>
+            >,
             createdAt: row.createdAt,
           })),
         ),

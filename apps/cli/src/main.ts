@@ -27,6 +27,24 @@ const findWorkspaceRoot = (startDir: string): Effect.Effect<string> =>
 
 const serveCommand = Command.make('serve', {}, () =>
   Effect.gen(function* () {
+    const engineModule = yield* Effect.promise(() =>
+      // @ts-expect-error - generated file at build time
+      import('engine.gen.ts')
+        .then(
+          (m) =>
+            m as {
+              boot: () => Promise<Effect.Effect<never, never, never>>;
+            },
+        )
+        .catch(() => null),
+    );
+
+    if (engineModule) {
+      const serverEffect = yield* Effect.promise(() => engineModule.boot());
+      yield* serverEffect;
+      return;
+    }
+
     const workspaceRoot = yield* findWorkspaceRoot(import.meta.dir);
     const proc = yield* platform.Command.make(
       'bun',

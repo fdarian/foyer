@@ -90,11 +90,7 @@ export const SecretServiceLive = Layer.effect(
         const row = rows[0];
         if (!row) return null;
         const decrypted = yield* Effect.promise(() =>
-          decryptValue(
-            row.encryptedValue as Buffer,
-            row.iv as Buffer,
-            key,
-          ),
+          decryptValue(row.encryptedValue as Buffer, row.iv as Buffer, key),
         );
         return decrypted;
       });
@@ -123,9 +119,7 @@ export const SecretServiceLive = Layer.effect(
               .returning(),
           catch: (cause: unknown) => new Error(String(cause)),
         });
-        const row = rows[0] as
-          | { id: number; uuid: string }
-          | undefined;
+        const row = rows[0] as { id: number; uuid: string } | undefined;
         if (!row) {
           return yield* Effect.fail(new Error('Failed to insert secret'));
         }

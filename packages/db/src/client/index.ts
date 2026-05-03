@@ -1,7 +1,10 @@
 import { createPgliteClient } from './pglite';
 import { createPostgresClient } from './postgres';
 
-export function createDatabaseClient() {
+export function createDatabaseClient(options?: {
+  fsBundle?: Blob | File;
+  wasmModule?: WebAssembly.Module;
+}) {
   if (process.env.DATABASE_LITE === 'false') {
     const url = process.env.DATABASE_URL;
     if (!url) {
@@ -10,7 +13,7 @@ export function createDatabaseClient() {
     return createPostgresClient(url);
   }
   const path = process.env.DATABASE_LITE_PATH ?? 'services/engine/data/pglite/';
-  return createPgliteClient(path);
+  return createPgliteClient(path, options);
 }
 
 export { migratePglite } from './migrate';
